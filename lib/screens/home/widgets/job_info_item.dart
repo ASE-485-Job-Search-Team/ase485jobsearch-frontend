@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jobsearchmobile/models/job_info.dart';
+import 'package:jobsearchmobile/screens/home/widgets/job_detail.dart';
 
 class JobInfoItem extends StatelessWidget {
   final JobPosting jobPosting;
@@ -10,7 +11,7 @@ class JobInfoItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 280.0,
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           color: Colors.white,
@@ -41,16 +42,16 @@ class JobInfoItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          width: 150,
+                          width: 180,
                           child: Text(
                             jobPosting.title,
                             overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
+                            maxLines: 1,
                             style: const TextStyle(
                                 fontSize: 16.0, fontWeight: FontWeight.w600),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 4.0,
                         ),
                         Text(jobPosting.company,
@@ -82,16 +83,29 @@ class JobInfoItem extends StatelessWidget {
                   )
                 ],
               ),
-              // ActionChip(
-              //   visualDensity: VisualDensity.compact,
-              //   backgroundColor: Colors.blue,
-              //   label: Text(
-              //     jobPosting.jobType,
-              //     // style: const TextStyle(
-              //     //     color: Color.fromRGBO(0, 57, 124, 1), fontSize: 10.0),
-              //   ),
-              //   // backgroundColor: const Color.fromRGBO(239, 245, 253, 1),
-              // ),
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet<void>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24.0),
+                    ),
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (BuildContext context) => JobDetail(
+                      jobPosting: jobPosting,
+                    ),
+                  );
+                },
+                child: Chip(
+                  label: Text(
+                    'Details',
+                    style:
+                        TextStyle(fontSize: 12.0, color: Colors.grey.shade700),
+                  ),
+                  visualDensity: VisualDensity.compact,
+                  backgroundColor: Colors.grey.shade100,
+                ),
+              )
             ],
           ),
           // Row(
