@@ -14,7 +14,7 @@ class _TagListState extends State<TagList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.symmetric(vertical: 16.0),
       height: 32.0,
       child: ListView.separated(
           scrollDirection: Axis.horizontal,

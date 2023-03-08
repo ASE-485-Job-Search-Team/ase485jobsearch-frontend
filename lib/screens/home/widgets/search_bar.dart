@@ -21,7 +21,7 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(0.0, 12.0, 0.0, 0.0),
       child: Stack(
         children: [
           Container(

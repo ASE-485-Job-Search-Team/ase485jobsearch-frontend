@@ -181,7 +181,7 @@ class _HomeJobPostingListState extends State<HomeJobPostingList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -223,26 +223,26 @@ class _HomeJobPostingListState extends State<HomeJobPostingList> {
                       ),
                   itemCount: jobPostings.length),
             ),
-            // const SizedBox(
-            //   height: 12.0,
-            // ),
-            // const Text(
-            //   'Popular job postings',
-            //   style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
-            // ),
-            // Container(
-            //   padding: const EdgeInsets.symmetric(vertical: 8.0),
-            //   height: 136.0,
-            //   child: ListView.separated(
-            //       scrollDirection: Axis.horizontal,
-            //       itemBuilder: (context, index) => JobInfoItem(
-            //             jobPosting: jobPostings[index],
-            //           ),
-            //       separatorBuilder: (_, index) => const SizedBox(
-            //             width: 12.0,
-            //           ),
-            //       itemCount: jobPostings.length),
-            // ),
+            const SizedBox(
+              height: 12.0,
+            ),
+            const Text(
+              'Popular job postings',
+              style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              height: 136.0,
+              child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) => JobInfoItem(
+                        jobPosting: jobPostings[index],
+                      ),
+                  separatorBuilder: (_, index) => const SizedBox(
+                        width: 12.0,
+                      ),
+                  itemCount: jobPostings.length),
+            ),
           ],
         ),
       ),

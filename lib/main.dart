@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:jobsearchmobile/screens/home/home_page.dart';
+import 'package:jobsearchmobile/screens/home/main_layout.dart';
 
 void main() => runApp(MyApp());
 
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => LandingPage(),
         '/signup': (context) => SignUpPage(),
         '/login': (context) => LoginPage(),
-        '/home': (context) => HomePage(),
+        '/home': (context) => MainAppLayout(),
         // '/user': (context) => UserDashboardPage(),
         // '/resume': (context) => ResumeUploadPage(),
         // '/company': (context) => DashboardPage(),

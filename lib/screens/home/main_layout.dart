@@ -1,37 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:jobsearchmobile/screens/home/widgets/app_bar.dart';
-import 'package:jobsearchmobile/screens/home/widgets/job_posting_list.dart';
-import 'package:jobsearchmobile/screens/home/widgets/search_bar.dart';
-import 'package:jobsearchmobile/screens/home/widgets/tag_list.dart';
+import 'package:jobsearchmobile/screens/home/widgets/user_home_page.dart';
+import 'package:jobsearchmobile/screens/my_applications/my_applications.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class MainAppLayout extends StatefulWidget {
+  const MainAppLayout({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<MainAppLayout> createState() => _MainAppLayoutState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _MainAppLayoutState extends State<MainAppLayout> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 24, fontWeight: FontWeight.bold);
   static final List<Widget> _widgetOptions = <Widget>[
-    Column(
-      children: [
-        HomeAppBar(),
-        HomeSearchBar(),
-        TagList(),
-        HomeJobPostingList()
-      ],
-    ),
-    Text(
-      'My Applications',
-      style: optionStyle,
-    ),
-    Text(
-      'My Profile',
-      style: optionStyle,
-    ),
+    UserHomePage(),
+    MyApplications(),
+    Text('Hello'),
   ];
 
   void _onItemTapped(int index) {
