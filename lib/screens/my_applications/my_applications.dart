@@ -222,6 +222,37 @@ class _MyApplicationsState extends State<MyApplications> {
       ),
     ),
   ];
+  late Map<JobApplicationStatus, int> statusCounts = {
+    JobApplicationStatus.applied: 0,
+    JobApplicationStatus.underReview: 0,
+    JobApplicationStatus.offered: 0,
+    JobApplicationStatus.rejected: 0,
+    JobApplicationStatus.unknown: 0,
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    countApplicationsByStatus(jobApplications);
+  }
+
+  void countApplicationsByStatus(List<JobApplication> jobApplications) {
+    Map<JobApplicationStatus, int> tmpStatusCount = {
+      JobApplicationStatus.applied: 0,
+      JobApplicationStatus.underReview: 0,
+      JobApplicationStatus.offered: 0,
+      JobApplicationStatus.rejected: 0,
+      JobApplicationStatus.unknown: 0,
+    };
+    for (var application in jobApplications) {
+      if (tmpStatusCount.containsKey(application.status)) {
+        tmpStatusCount.update(application.status, (value) => value + 1);
+      }
+    }
+    setState(() {
+      statusCounts = tmpStatusCount;
+    });
+  }
 
   Map<DateTime, List<JobApplication>> mapJobApplicationsByDate(
       List<JobApplication> jobApplications) {
@@ -255,7 +286,13 @@ class _MyApplicationsState extends State<MyApplications> {
               'Overview',
               style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
             ),
-            const JobApplicationChart(),
+            JobApplicationChart(
+              applied: statusCounts[JobApplicationStatus.applied],
+              underReview: statusCounts[JobApplicationStatus.underReview],
+              offered: statusCounts[JobApplicationStatus.offered],
+              rejected: statusCounts[JobApplicationStatus.rejected],
+              unknown: statusCounts[JobApplicationStatus.unknown],
+            ),
             const Text(
               'My Applications',
               style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),

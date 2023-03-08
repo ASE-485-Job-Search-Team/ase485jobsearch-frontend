@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:jobsearchmobile/screens/home/widgets/search_bar.dart';
 import 'package:jobsearchmobile/screens/home/widgets/tag_list.dart';
 
-import 'app_bar.dart';
-import 'job_posting_list.dart';
+import 'widgets/app_bar.dart';
+import 'widgets/job_posting_list.dart';
 
 class UserHomePage extends StatelessWidget {
   const UserHomePage({Key? key}) : super(key: key);

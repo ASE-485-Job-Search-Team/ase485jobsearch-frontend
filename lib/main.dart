@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:jobsearchmobile/screens/home/main_layout.dart';
+import 'package:jobsearchmobile/screens/main_layout.dart';
 
 void main() => runApp(MyApp());
 

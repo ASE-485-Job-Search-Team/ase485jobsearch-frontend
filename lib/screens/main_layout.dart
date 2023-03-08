@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jobsearchmobile/screens/home/widgets/user_home_page.dart';
+import 'package:jobsearchmobile/screens/home/user_home_page.dart';
 import 'package:jobsearchmobile/screens/my_applications/my_applications.dart';
 
 class MainAppLayout extends StatefulWidget {
