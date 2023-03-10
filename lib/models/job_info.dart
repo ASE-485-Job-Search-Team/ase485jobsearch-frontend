@@ -1,4 +1,5 @@
 class JobPosting {
+  final String id;
   final String title;
   final String company;
   final String location;
@@ -12,6 +13,7 @@ class JobPosting {
   final String salaryRange;
 
   JobPosting({
+    required this.id,
     required this.title,
     required this.company,
     required this.location,
@@ -27,6 +29,7 @@ class JobPosting {
 
   factory JobPosting.fromJson(Map<String, dynamic> json) {
     return JobPosting(
+        id: json['id'],
         title: json['title'],
         company: json['company'],
         location: json['location'],
@@ -42,6 +45,7 @@ class JobPosting {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'title': title,
       'company': company,
       'location': location,

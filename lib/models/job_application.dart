@@ -24,10 +24,25 @@ class JobApplication {
     return JobApplication(
         id: json['id'],
         dateApplied: DateTime.parse(json['dateApplied']),
-        status: json['status'],
+        status: mapStatus(json['status']),
         jobSeekerId: json['jobSeekerId'],
         jobPostingId: json['jobPostingId'],
-        jobPosting: json['jobPosting']);
+        jobPosting: JobPosting.fromJson(json['jobPosting']));
+  }
+
+  static JobApplicationStatus mapStatus(String status) {
+    switch (status) {
+      case 'applied':
+        return JobApplicationStatus.applied;
+      case 'underReview':
+        return JobApplicationStatus.underReview;
+      case 'offered':
+        return JobApplicationStatus.offered;
+      case 'rejected':
+        return JobApplicationStatus.rejected;
+      default:
+        return JobApplicationStatus.unknown;
+    }
   }
 
   Map<String, dynamic> toJson() => {
