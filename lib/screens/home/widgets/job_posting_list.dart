@@ -1,10 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:jobsearchmobile/constants/api.dart';
 import 'package:jobsearchmobile/screens/home/widgets/job_info_item.dart';
 import 'package:http/http.dart' as http;
 import '../../../models/job_info.dart';
+import '../../../services/job_posting_service.dart';
 
 class HomeJobPostingList extends StatefulWidget {
   const HomeJobPostingList({Key? key}) : super(key: key);
@@ -14,19 +12,20 @@ class HomeJobPostingList extends StatefulWidget {
 }
 
 class _HomeJobPostingListState extends State<HomeJobPostingList> {
-  Future<List<JobPosting>> fetchJobPostingsForBuilder(
-      {String query = ''}) async {
-    final response =
-        await http.get(Uri.parse('${Api.baseUrl}/jobPostings?$query'));
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonData = jsonDecode(response.body);
-      return jsonData
-          .map((jobPosting) => JobPosting.fromJson(jobPosting))
-          .toList();
-    } else {
-      throw Exception('Failed to load job postings');
-    }
-  }
+  final jobPostingService = JobPostingService(httpClient: http.Client());
+  // Future<List<JobPosting>> fetchJobPostingsForBuilder(http.Client client,
+  //     {String query = ''}) async {
+  //   final response =
+  //       await client.get(Uri.parse('${Api.baseUrl}/jobPostings?$query'));
+  //   if (response.statusCode == 200) {
+  //     final List<dynamic> jsonData = jsonDecode(response.body);
+  //     return jsonData
+  //         .map((jobPosting) => JobPosting.fromJson(jobPosting))
+  //         .toList();
+  //   } else {
+  //     throw Exception('Failed to load job postings');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +43,8 @@ class _HomeJobPostingListState extends State<HomeJobPostingList> {
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               height: 136.0,
               child: FutureBuilder<List<JobPosting>>(
-                future: fetchJobPostingsForBuilder(),
+                future:
+                    jobPostingService.fetchJobPostingsForBuilder(http.Client()),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return JobPostingListView(
@@ -71,7 +71,8 @@ class _HomeJobPostingListState extends State<HomeJobPostingList> {
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               height: 136.0,
               child: FutureBuilder<List<JobPosting>>(
-                future: fetchJobPostingsForBuilder(
+                future: jobPostingService.fetchJobPostingsForBuilder(
+                    http.Client(),
                     query: '_sort=datePosted&_order=desc'),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
@@ -99,7 +100,8 @@ class _HomeJobPostingListState extends State<HomeJobPostingList> {
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               height: 136.0,
               child: FutureBuilder<List<JobPosting>>(
-                future: fetchJobPostingsForBuilder(),
+                future:
+                    jobPostingService.fetchJobPostingsForBuilder(http.Client()),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return JobPostingListView(

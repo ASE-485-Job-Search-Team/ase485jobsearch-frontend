@@ -146,7 +146,7 @@ class JobDetail extends StatelessWidget {
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('You have applied for this job!'),
+                        content: Text('Application Submitted!'),
                       ),
                     );
                     Navigator.pop(context);
