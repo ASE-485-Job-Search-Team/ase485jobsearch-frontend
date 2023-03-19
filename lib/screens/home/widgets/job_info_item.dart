@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jobsearchmobile/models/job_info.dart';
+import 'package:jobsearchmobile/screens/home/widgets/apply_button.dart';
 import 'package:jobsearchmobile/screens/home/widgets/job_detail.dart';
 
 class JobInfoItem extends StatelessWidget {
@@ -57,7 +58,8 @@ class JobInfoItem extends StatelessWidget {
                         Text(jobPosting.company,
                             style: const TextStyle(
                                 fontSize: 12.0, color: Colors.grey))
-                      ])
+                      ]),
+                      ApplyJobButton()
                 ],
               ),
               // IconButton(

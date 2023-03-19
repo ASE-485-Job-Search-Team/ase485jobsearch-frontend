@@ -21,7 +21,7 @@ class UserHomePage extends StatelessWidget {
             HomeAppBar(),
             HomeSearchBar(),
             TagList(),
-            HomeJobPostingList()
+            HomeJobPostingList(),
           ],
         ),
       ),

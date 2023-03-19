@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:jobsearchmobile/models/job_application.dart';
 import 'package:jobsearchmobile/screens/home/widgets/pie_chart.dart';
 import 'package:jobsearchmobile/screens/my_applications/widgets/application_card.dart';
+import 'package:jobsearchmobile/screens/my_applications/widgets/create_app_button.dart';
 import 'package:http/http.dart' as http;
 import '../../constants/api.dart';
 
@@ -71,6 +72,7 @@ class _MyApplicationsState extends State<MyApplications> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            CreateAppButton(),
             const Text(
               'Overview',
               style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
