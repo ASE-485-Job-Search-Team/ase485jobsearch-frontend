@@ -13,19 +13,6 @@ class HomeJobPostingList extends StatefulWidget {
 
 class _HomeJobPostingListState extends State<HomeJobPostingList> {
   final jobPostingService = JobPostingService(httpClient: http.Client());
-  // Future<List<JobPosting>> fetchJobPostingsForBuilder(http.Client client,
-  //     {String query = ''}) async {
-  //   final response =
-  //       await client.get(Uri.parse('${Api.baseUrl}/jobPostings?$query'));
-  //   if (response.statusCode == 200) {
-  //     final List<dynamic> jsonData = jsonDecode(response.body);
-  //     return jsonData
-  //         .map((jobPosting) => JobPosting.fromJson(jobPosting))
-  //         .toList();
-  //   } else {
-  //     throw Exception('Failed to load job postings');
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {

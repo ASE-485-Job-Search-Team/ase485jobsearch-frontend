@@ -1,12 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jobsearchmobile/models/job_application.dart';
 import 'package:jobsearchmobile/screens/home/widgets/pie_chart.dart';
 import 'package:jobsearchmobile/screens/my_applications/widgets/application_card.dart';
 import 'package:http/http.dart' as http;
-import '../../constants/api.dart';
+import '../../services/my_application_service.dart';
 
 class MyApplications extends StatefulWidget {
   const MyApplications({Key? key}) : super(key: key);
@@ -16,19 +14,7 @@ class MyApplications extends StatefulWidget {
 }
 
 class _MyApplicationsState extends State<MyApplications> {
-  Future<List<JobApplication>> fetchJobApplicationsForBuilder(
-      {String query = ''}) async {
-    final response =
-        await http.get(Uri.parse('${Api.baseUrl}/applications?$query'));
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonData = jsonDecode(response.body);
-      return jsonData
-          .map((jobApplication) => JobApplication.fromJson(jobApplication))
-          .toList();
-    } else {
-      throw Exception('Failed to load job applications');
-    }
-  }
+  final myApplicationService = MyApplicationService(httpClient: http.Client());
 
   Map<JobApplicationStatus, int> countByStatus(
       List<JobApplication> jobApplications) {
@@ -76,7 +62,8 @@ class _MyApplicationsState extends State<MyApplications> {
               style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
             ),
             FutureBuilder(
-                future: fetchJobApplicationsForBuilder(),
+                future: myApplicationService
+                    .fetchJobApplicationsForBuilder(http.Client()),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final jobApplications =
@@ -109,13 +96,12 @@ class _MyApplicationsState extends State<MyApplications> {
               height: 16.0,
             ),
             FutureBuilder(
-                future: fetchJobApplicationsForBuilder(),
+                future: myApplicationService
+                    .fetchJobApplicationsForBuilder(http.Client()),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final jobApplications =
                         snapshot.data as List<JobApplication>;
-                    final jobApplicationsByStatus =
-                        countByStatus(jobApplications);
                     final jobApplicationsByDate = mapByDate(jobApplications);
                     return Column(
                       children:
