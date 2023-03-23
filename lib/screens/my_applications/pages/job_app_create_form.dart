@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class JobApplicationPage extends StatefulWidget {
   @override
@@ -22,6 +24,7 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
 
   List<TextEditingController> _qualificationControllers = [];
   List<TextEditingController> _responsibilitiesControllers = [];
+
 
   String? _validateNotEmpty(String? value) {
     if (value == null || value.isEmpty) {
@@ -211,14 +214,50 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                   validator: _validateNotEmpty,
                 ),
                 SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-// Submit job application
-// ...
+              ElevatedButton(
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    // Build the job application data as a map
+                    final jobApplicationData = {
+                      'job_title': _jobTitleController.text,
+                      'company_name': _companyNameController.text,
+                      'location': _locationController.text,
+                      'job_type': _jobTypeController.text,
+                      'job_description': _jobDescriptionController.text,
+                      'qualifications': _qualificationControllers
+                          .map((controller) => controller.text)
+                          .toList(),
+                      'responsibilities': _responsibilitiesControllers
+                          .map((controller) => controller.text)
+                          .toList(),
+                      'posted_date': _postedDateController.text,
+                      'closing_date': _closingDateController.text,
+                      'company_logo_url': _companyLogoURLController.text,
+                      'salary_range': _salaryRangeController.text,
+                    };
+
+                    try {
+                      // Send the job application data as a JSON object to the API
+                      final response = await http.post(
+                        Uri.parse('https://example.com/api/job_applications'),
+                        headers: {'Content-Type': 'application/json'},
+                        body: jsonEncode(jobApplicationData),
+                      );
+
+                      if (response.statusCode == 200) {
+                        // Job application submitted successfully
+                        // ...
+                      } else {
+                        // API returned an error
+                        // ...
+                      }
+                    } catch (e) {
+                      // Error sending the API request
+                      // ...
                     }
-                  },
-                  child: Text('Submit'),
+                  }
+                },
+                child: Text('Submit'),
                 ),
               ],
             ),

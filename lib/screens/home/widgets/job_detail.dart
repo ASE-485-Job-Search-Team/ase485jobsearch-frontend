@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jobsearchmobile/screens/home/widgets/bullet_widgets.dart';
-
+import 'package:http/http.dart' as http;
 import '../../../models/job_info.dart';
 
 class JobDetail extends StatelessWidget {
@@ -143,13 +143,23 @@ class JobDetail extends StatelessWidget {
                 width: 200.0,
                 height: 42.0,
                 child: ElevatedButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Application Submitted!'),
-                      ),
-                    );
-                    Navigator.pop(context);
+                  onPressed: () async {
+                    var response = await http.get(Uri.parse('https://example.com/api/apply'));
+
+                    if (response.statusCode == 200) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Application Submitted!'),
+                        ),
+                      );
+                      Navigator.pop(context);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Error submitting application.'),
+                        ),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue.shade700,
