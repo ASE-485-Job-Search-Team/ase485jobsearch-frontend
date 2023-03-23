@@ -15,12 +15,13 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _jobTypeController = TextEditingController();
   final TextEditingController _jobDescriptionController = TextEditingController();
-  final TextEditingController _qualificationsController = TextEditingController();
-  final TextEditingController _responsibilitiesController = TextEditingController();
   final TextEditingController _postedDateController = TextEditingController();
   final TextEditingController _closingDateController = TextEditingController();
   final TextEditingController _companyLogoURLController = TextEditingController();
   final TextEditingController _salaryRangeController = TextEditingController();
+
+  List<TextEditingController> _qualificationControllers = [];
+  List<TextEditingController> _responsibilitiesControllers = [];
 
   String? _validateNotEmpty(String? value) {
     if (value == null || value.isEmpty) {
@@ -32,7 +33,10 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
   @override
   void initState() {
     super.initState();
-    _postedDateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    _postedDateController.text =
+        DateFormat('yyyy-MM-dd').format(DateTime.now());
+    _qualificationControllers.add(TextEditingController());
+    _responsibilitiesControllers.add(TextEditingController());
   }
 
   @override
@@ -42,13 +46,71 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
     _locationController.dispose();
     _jobTypeController.dispose();
     _jobDescriptionController.dispose();
-    _qualificationsController.dispose();
-    _responsibilitiesController.dispose();
     _postedDateController.dispose();
     _closingDateController.dispose();
     _companyLogoURLController.dispose();
     _salaryRangeController.dispose();
+    for (var controller in _qualificationControllers) {
+      controller.dispose();
+    }
     super.dispose();
+
+    for (var controller in _responsibilitiesControllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  Widget _buildResponsibilityFields() {
+    List<Widget> fields = [];
+    for (var i = 0; i < _responsibilitiesControllers.length; i++) {
+      fields.addAll([
+        TextFormField(
+          decoration: InputDecoration(labelText: 'Responsibility'),
+          controller: _responsibilitiesControllers[i],
+          maxLines: null,
+          keyboardType: TextInputType.multiline,
+          validator: _validateNotEmpty,
+        ),
+        SizedBox(height: 16.0),
+      ]);
+    }
+    fields.add(ElevatedButton.icon(
+      onPressed: () {
+        setState(() {
+          _responsibilitiesControllers.add(TextEditingController());
+        });
+      },
+      icon: Icon(Icons.add),
+      label: Text('Add Responsibility'),
+    ));
+    return Column(children: fields);
+  }
+
+  Widget _buildQualificationFields() {
+    List<Widget> fields = [];
+    for (var i = 0; i < _qualificationControllers.length; i++) {
+      fields.addAll([
+        TextFormField(
+          decoration: InputDecoration(labelText: 'Qualifications'),
+          controller: _qualificationControllers[i],
+          maxLines: null,
+          keyboardType: TextInputType.multiline,
+          validator: _validateNotEmpty,
+        ),
+        SizedBox(height: 16.0),
+      ]);
+    }
+    fields.add(ElevatedButton.icon(
+      onPressed: () {
+        setState(() {
+          _qualificationControllers.add(TextEditingController());
+        });
+      },
+      icon: Icon(Icons.add),
+      label: Text('Add Qualification'),
+    ));
+    return Column(children: fields);
   }
 
   @override
@@ -72,7 +134,8 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                 ),
                 SizedBox(height: 16.0),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Company Name based on logged in user'),
+                  decoration: InputDecoration(
+                      labelText: 'Company Name based on logged in user'),
                   controller: _companyNameController,
                   validator: _validateNotEmpty,
                   readOnly: true,
@@ -98,65 +161,61 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                   validator: _validateNotEmpty,
                 ),
                 SizedBox(height: 16.0),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Qualifications'),
-                  controller: _qualificationsController,
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                  validator: _validateNotEmpty,
-                ),
+                _buildQualificationFields(),
                 SizedBox(height: 16.0),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Responsibilities'),
-                  controller: _responsibilitiesController,
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                  validator: _validateNotEmpty,
-                ),
+                _buildResponsibilityFields(),
                 SizedBox(height: 16.0),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Date Posted: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}'),
-                  controller: _postedDateController,
-                  validator: _validateNotEmpty,
-                  readOnly: true,
-                ),
-                SizedBox(height: 16.0),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Closing Date (YYYY-MM-DD)'),
-                  controller: _closingDateController,
-                  validator: _validateNotEmpty,
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        decoration: InputDecoration(labelText: 'Posted Date'),
+                        controller: _postedDateController,
+                        readOnly: true,
+                      ),
+                    ),
+                    SizedBox(width: 16.0),
+                    Expanded(
+                      child: TextFormField(
+                        decoration: InputDecoration(labelText: 'Closing Date'),
+                        controller: _closingDateController,
+                        validator: _validateNotEmpty,
+                        onTap: () async {
+                          DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(Duration(days: 365)),
+                          );
+                          if (pickedDate != null) {
+                            _closingDateController.text =
+                                DateFormat('yyyy-MM-dd').format(pickedDate);
+                          }
+                        },
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 16.0),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Company Logo URL'),
                   controller: _companyLogoURLController,
+                  keyboardType: TextInputType.url,
                   validator: _validateNotEmpty,
                 ),
                 SizedBox(height: 16.0),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Salary Range'),
                   controller: _salaryRangeController,
+                  keyboardType: TextInputType.number,
                   validator: _validateNotEmpty,
                 ),
                 SizedBox(height: 16.0),
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      Map<String, dynamic> jsonData = {
-                        'jobTitle': _jobTitleController.text,
-                        'company': "Company Name Based on Logged in User/Company",
-                        'location': _locationController.text,
-                        'jobType': _jobTypeController.text,
-                        'jobDescription': _jobDescriptionController.text,
-                        'qualifications': _qualificationsController.text,
-                        'responsibilities': _responsibilitiesController.text,
-                        'datePosted': DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                        'closingDate': _closingDateController.text,
-                        'companyLogoURL': _companyLogoURLController.text,
-                        'salaryRange': _salaryRangeController.text,
-                      };
-                      print(jsonData);
-                      // Send jsonData to database
+// Submit job application
+// ...
                     }
                   },
                   child: Text('Submit'),
