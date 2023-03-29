@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:jobsearchmobile/screens/main_layout.dart';
+import 'package:jobsearchmobile/screens/home/widgets/custom_app_bar.dart';
 
 void main() => runApp(MyApp());
 
@@ -50,29 +51,23 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(title: "Welcome to JobHive!"),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              'Welcome to [Name]!',
-              style: Theme.of(context).textTheme.displayLarge,
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 30.0),
             ElevatedButton(
               onPressed: () {
                 // Navigate to sign up page
                 Navigator.pushNamed(context, '/signup');
               },
-              child: Text('Sign up'),
+              child: Text('Sign Up'),
               style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all(Theme.of(context).primaryColor),
+                backgroundColor: MaterialStateProperty.all(Color(0xFF2c3a6d)),
                 padding: MaterialStateProperty.all(
-                    EdgeInsets.symmetric(vertical: 12.0)),
+                    EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0)),
               ),
             ),
             SizedBox(height: 20.0),
@@ -81,12 +76,11 @@ class _LandingPageState extends State<LandingPage> {
                 // Navigate to login page
                 Navigator.pushNamed(context, '/login');
               },
-              child: Text('Login'),
+              child: Text('Log In'),
               style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all(Theme.of(context).primaryColor),
+                backgroundColor: MaterialStateProperty.all(Color(0xFF2c3a6d)),
                 padding: MaterialStateProperty.all(
-                    EdgeInsets.symmetric(vertical: 12.0)),
+                    EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0)),
               ),
             ),
             SizedBox(height: 20.0),
@@ -97,10 +91,9 @@ class _LandingPageState extends State<LandingPage> {
               },
               child: Text('Home'),
               style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all(Theme.of(context).primaryColor),
+                backgroundColor: MaterialStateProperty.all(Color(0xFF2c3a6d)),
                 padding: MaterialStateProperty.all(
-                    EdgeInsets.symmetric(vertical: 12.0)),
+                    EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0)),
               ),
             ),
           ],
@@ -179,9 +172,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Sign up'),
-        ),
+        appBar: CustomAppBar(title: "Sign Up"),
         body: Form(
             key: _formKey,
             child: Padding(
@@ -206,11 +197,11 @@ class _SignUpPageState extends State<SignUpPage> {
                       child: Column(
                         children: <Widget>[
                           Text(
-                            'Sign up',
+                            'Sign Up',
                             style: TextStyle(
                               fontSize: 24.0,
                               fontWeight: FontWeight.bold,
-                            ),
+                              color: Color(0xFF2c3a6d)),
                           ),
                           SizedBox(height: 16.0),
                           TextFormField(
@@ -266,6 +257,10 @@ class _SignUpPageState extends State<SignUpPage> {
                           ElevatedButton(
                             onPressed: _handleSignUp,
                             child: Text('Sign up'),
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(Color(0xFF2c3a6d)),
+                              padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0)),
+                            ),
                           ),
                         ],
                       ),
@@ -315,9 +310,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
+      appBar: CustomAppBar(title: "Log In"),
       body: Form(
         key: _formKey,
         child: Padding(
@@ -346,6 +339,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextStyle(
                           fontSize: 24.0,
                           fontWeight: FontWeight.bold,
+                          color: (Color(0xFF2c3a6d))
                         ),
                       ),
                       SizedBox(height: 16.0),
@@ -373,6 +367,10 @@ class _LoginPageState extends State<LoginPage> {
                       ElevatedButton(
                         onPressed: _handleLogin,
                         child: Text('Login'),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Color(0xFF2c3a6d)),
+                          padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0)),
+                        ),
                       ),
                     ],
                   ),

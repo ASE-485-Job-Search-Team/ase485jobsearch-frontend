@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jobsearchmobile/screens/home/widgets/custom_app_bar.dart';
 import 'package:jobsearchmobile/screens/home/widgets/search_bar.dart';
 import 'package:jobsearchmobile/screens/home/widgets/tag_list.dart';
 
@@ -17,8 +18,8 @@ class UserHomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            HomeAppBar(),
+          children: [
+            CustomAppBar(title: "Home"),
             HomeSearchBar(),
             TagList(),
             HomeJobPostingList(),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:jobsearchmobile/screens/home/widgets/custom_app_bar.dart';
 
 class JobApplicationPage extends StatefulWidget {
   @override
@@ -79,6 +80,11 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
       ]);
     }
     fields.add(ElevatedButton.icon(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Color(0xFF2c3a6d)),
+        padding: MaterialStateProperty.all(
+            EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0)),
+      ),
       onPressed: () {
         setState(() {
           _responsibilitiesControllers.add(TextEditingController());
@@ -105,6 +111,11 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
       ]);
     }
     fields.add(ElevatedButton.icon(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Color(0xFF2c3a6d)),
+        padding: MaterialStateProperty.all(
+            EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0)),
+      ),
       onPressed: () {
         setState(() {
           _qualificationControllers.add(TextEditingController());
@@ -119,9 +130,7 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Job Application'),
-      ),
+      appBar: CustomAppBar(title: "Create Job Application"),
       body: Form(
         key: _formKey,
         child: Padding(
@@ -215,6 +224,11 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                 ),
                 SizedBox(height: 16.0),
               ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Color(0xFF2c3a6d)),
+                  padding: MaterialStateProperty.all(
+                      EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0)),
+                ),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     // Build the job application data as a map

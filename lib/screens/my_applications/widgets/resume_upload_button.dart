@@ -15,7 +15,9 @@ class _ResumeUploadButtonState extends State<ResumeUploadButton> {
 
   Future<void> _uploadResume() async {
     final filePickerResult =
-    await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);if (filePickerResult != null && filePickerResult.files.isNotEmpty) {
+    await FilePicker.platform.pickFiles(
+        type: FileType.custom, allowedExtensions: ['pdf']);
+    if (filePickerResult != null && filePickerResult.files.isNotEmpty) {
       final file = filePickerResult.files.first;
       setState(() {
         _resumeFileName = file.name ?? '';
@@ -28,8 +30,9 @@ class _ResumeUploadButtonState extends State<ResumeUploadButton> {
       try {
         var request = http.MultipartRequest(
             'POST', Uri.parse('http://your_api_endpoint.com/upload_resume'));
-        request.files.add(await http.MultipartFile.fromPath('resume', resumeFile.path,
-            filename: fileName));
+        request.files.add(
+            await http.MultipartFile.fromPath('resume', resumeFile.path,
+                filename: fileName));
         var response = await request.send();
         print(response.statusCode);
       } catch (e) {
@@ -40,18 +43,27 @@ class _ResumeUploadButtonState extends State<ResumeUploadButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        if (_resumeFileName.isNotEmpty)
-          Text(
-            'Selected resume: $_resumeFileName',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ElevatedButton(
-          onPressed: _uploadResume,
-          child: Text('Upload Resume (PDF)'),
-        ),
-      ],
+    return Padding(
+        padding: const EdgeInsets.all(1.5),
+        child: Column(
+          children: [
+            if (_resumeFileName.isNotEmpty)
+              Text(
+                'Selected resume: $_resumeFileName',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ElevatedButton(
+              onPressed: _uploadResume,
+              child: Text('Upload Resume (PDF)'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Color(0xFF2c3a6d)),
+                padding: MaterialStateProperty.all(
+                    EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0)),
+              ),
+            ),
+          ],
+        )
     );
   }
 }
+

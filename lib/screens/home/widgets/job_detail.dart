@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:jobsearchmobile/screens/home/widgets/bullet_widgets.dart';
 import 'package:http/http.dart' as http;
 import '../../../models/job_info.dart';
+import '../../../models/job_application.dart';
+
 
 class JobDetail extends StatelessWidget {
   final JobPosting jobPosting;
@@ -144,7 +147,25 @@ class JobDetail extends StatelessWidget {
                 height: 42.0,
                 child: ElevatedButton(
                   onPressed: () async {
-                    var response = await http.get(Uri.parse('https://example.com/api/apply'));
+                    // Create a JobApplication object
+                    final jobApplication = JobApplication(
+                      id: 0, // Provide an appropriate ID or keep it 0 for auto-increment
+                      dateApplied: DateTime.now(),
+                      status: JobApplicationStatus.applied,
+                      jobSeekerId: 1, // Replace with the actual jobSeekerId
+                      jobPostingId: int.parse(jobPosting.id),
+                      jobPosting: jobPosting,
+                    );
+
+                    // Convert the JobApplication object to JSON
+                    final jobApplicationJson = json.encode(jobApplication.toJson());
+
+                    // Send a POST request to the API with the JSON data
+                    var response = await http.post(
+                      Uri.parse('https://example.com/api/apply'),
+                      headers: {'Content-Type': 'application/json'},
+                      body: jobApplicationJson,
+                    );
 
                     if (response.statusCode == 200) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -162,13 +183,13 @@ class JobDetail extends StatelessWidget {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade700,
+                      backgroundColor: Color(0xFF2c3a6d),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50.0))),
                   child: const Text(
                     'Apply',
                     style:
-                        TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0),
+                    TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0),
                   ),
                 ),
               ),

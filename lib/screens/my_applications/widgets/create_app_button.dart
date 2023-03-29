@@ -8,7 +8,7 @@ class CreateAppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(1.5),
       child: ElevatedButton(
         onPressed: () {
           Navigator.push(
@@ -18,8 +18,8 @@ class CreateAppButton extends StatelessWidget {
         },
         child: Text('Create Application'),
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-          padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0)),
+          backgroundColor: MaterialStateProperty.all(Color(0xFF2c3a6d)),
+          padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0)),
         ),
       ),
     );

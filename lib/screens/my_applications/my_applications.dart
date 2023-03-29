@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jobsearchmobile/models/job_application.dart';
+import 'package:jobsearchmobile/screens/home/widgets/custom_app_bar.dart';
 import 'package:jobsearchmobile/screens/home/widgets/pie_chart.dart';
 import 'package:jobsearchmobile/screens/my_applications/widgets/application_card.dart';
 import 'package:jobsearchmobile/screens/my_applications/widgets/create_app_button.dart';
@@ -64,6 +65,8 @@ class _MyApplicationsState extends State<MyApplications> {
     return tmpJobApplicationsByDate;
   }
 
+  //bool isCompany = true; // Set this value based on the user type (company or job searcher)
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -73,12 +76,17 @@ class _MyApplicationsState extends State<MyApplications> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            CustomAppBar(title: "Applications"),
             Row(
               children: [
                 CreateAppButton(),
                 ResumeUploadButton(),
+                //isCompany
+                    //? CreateAppButton()
+                    //: ResumeUploadButton(),
               ],
             ),
+
             const Text(
               'Overview',
               style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),

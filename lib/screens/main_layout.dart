@@ -47,7 +47,7 @@ class _MainAppLayoutState extends State<MainAppLayout> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue[800],
+        selectedItemColor: Color(0xFF2c3a6d),
         onTap: _onItemTapped,
         backgroundColor: Colors.white,
       ),
