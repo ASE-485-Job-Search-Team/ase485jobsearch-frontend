@@ -6,7 +6,7 @@ class HomeAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 10, left: 16, right: 16),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -26,8 +26,7 @@ class HomeAppBar extends StatelessWidget {
           const CircleAvatar(
               backgroundImage: NetworkImage(
                   'https://flowbite.com/docs/images/people/profile-picture-5.jpg'),
-              backgroundColor: (Color(0xFF2c3a6d))
-          ),
+              backgroundColor: (Color(0xFF2c3a6d))),
         ],
       ),
     );

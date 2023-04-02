@@ -12,11 +12,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Color(0xFF2c3a6d),
+      backgroundColor: Colors.white,
       titleSpacing: 0.0,
       automaticallyImplyLeading: false, // Disable the automatic back button
       title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
             padding: const EdgeInsets.all(6.0),
@@ -29,12 +29,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Container(
-              child: Text(
-                title,
-                style: TextStyle(fontSize: 20),
+          const Padding(
+            padding: EdgeInsets.all(6.0),
+            child: Text(
+              'JobHive',
+              style: TextStyle(
+                color: Color(0xFF2c3a6d),
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),

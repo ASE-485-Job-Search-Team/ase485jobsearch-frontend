@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jobsearchmobile/screens/home/user_home_page.dart';
+import 'package:jobsearchmobile/screens/home/widgets/custom_app_bar.dart';
 import 'package:jobsearchmobile/screens/my_applications/my_applications.dart';
 import 'package:jobsearchmobile/screens/profile/profile_page.dart';
 
@@ -27,7 +28,7 @@ class _MainAppLayoutState extends State<MainAppLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(title: const Text('Home')),
+      appBar: CustomAppBar(title: "Home"),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),

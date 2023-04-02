@@ -19,7 +19,7 @@ class UserHomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomAppBar(title: "Home"),
+            HomeAppBar(),
             HomeSearchBar(),
             TagList(),
             HomeJobPostingList(),

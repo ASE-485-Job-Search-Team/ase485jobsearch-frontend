@@ -65,8 +65,6 @@ class _MyApplicationsState extends State<MyApplications> {
     return tmpJobApplicationsByDate;
   }
 
-  //bool isCompany = true; // Set this value based on the user type (company or job searcher)
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -76,17 +74,6 @@ class _MyApplicationsState extends State<MyApplications> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomAppBar(title: "Applications"),
-            Row(
-              children: [
-                CreateAppButton(),
-                ResumeUploadButton(),
-                //isCompany
-                    //? CreateAppButton()
-                    //: ResumeUploadButton(),
-              ],
-            ),
-
             const Text(
               'Overview',
               style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
