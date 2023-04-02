@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jobsearchmobile/screens/home/user_home_page.dart';
 import 'package:jobsearchmobile/screens/my_applications/my_applications.dart';
+import 'package:jobsearchmobile/screens/profile/profile_page.dart';
 
 class MainAppLayout extends StatefulWidget {
   const MainAppLayout({Key? key}) : super(key: key);
@@ -14,7 +15,7 @@ class _MainAppLayoutState extends State<MainAppLayout> {
   static final List<Widget> _widgetOptions = <Widget>[
     UserHomePage(),
     MyApplications(),
-    Text('Hello'),
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
