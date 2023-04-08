@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:jobsearchmobile/models/auth/register_request.dart';
+import 'package:jobsearchmobile/models/auth/register_company_request.dart';
 import 'package:jobsearchmobile/services/auth_api_service.dart';
 
 import 'package:snippet_coder_utils/FormHelper.dart';
@@ -9,19 +9,20 @@ import 'package:snippet_coder_utils/hex_color.dart';
 
 import '../../constants/api.dart';
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({Key? key}) : super(key: key);
+class SignUpCompanyPage extends StatefulWidget {
+  const SignUpCompanyPage({Key? key}) : super(key: key);
 
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _SignUpCompanyPageState createState() => _SignUpCompanyPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpCompanyPageState extends State<SignUpCompanyPage> {
   bool isApiCallProcess = false;
   bool hidePassword = true;
   static final GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
   late String password;
   late String email;
+  late String company;
 
   final String logoAssetPath = "assets/images/logo.png";
 
@@ -110,6 +111,31 @@ class _SignUpPageState extends State<SignUpPage> {
             padding: const EdgeInsets.only(bottom: 10),
             child: FormHelper.inputFieldWidget(
               context,
+              "Company",
+              "Company",
+                  (onValidateVal) {
+                if (onValidateVal.isEmpty) {
+                  return 'Company can\'t be empty.';
+                }
+
+                return null;
+              },
+                  (onSavedVal) => {
+                company = onSavedVal,
+              },
+              initialValue: "",
+              borderFocusColor: Colors.white,
+              prefixIconColor: Colors.white,
+              borderColor: Colors.white,
+              textColor: Colors.white,
+              hintColor: Colors.white.withOpacity(0.7),
+              borderRadius: 10,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: FormHelper.inputFieldWidget(
+              context,
               "Email",
               "Email",
                   (onValidateVal) {
@@ -180,13 +206,15 @@ class _SignUpPageState extends State<SignUpPage> {
                     isApiCallProcess = true;
                   });
 
-                  RegisterRequestModel model = RegisterRequestModel(
+                  RegisterRequestCompanyModel model =
+                  RegisterRequestCompanyModel(
+                    company: company,
                     email: email,
                     password: password,
-                    isAdmin: false,
+                    isAdmin: true,
                   );
 
-                  APIService.register(model).then(
+                  APIService.registerCompany(model).then(
                         (response) {
                       setState(() {
                         isApiCallProcess = false;

@@ -32,6 +32,10 @@ dependencies:
     sdk: flutter
   file_picker: ^4.0.0
   http: ^0.13.5
+  api_cache_manager: ^1.0.2
+  snippet_coder_utils: ^1.0.13
+  hive: ^2.0.4
+  hive_flutter: ^1.1.0
 
 
 
