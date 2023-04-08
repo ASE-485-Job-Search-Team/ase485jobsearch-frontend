@@ -72,7 +72,7 @@ class SharedService {
       await APICacheManager().deleteCache("login_details");
       Navigator.pushNamedAndRemoveUntil(
         context,
-        '/login',
+        '/',
             (route) => false,
       );
     }
