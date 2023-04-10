@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:jobsearchmobile/screens/home/widgets/custom_app_bar.dart';
+import 'package:jobsearchmobile/services/job_posting_service.dart';
 
 class JobApplicationPage extends StatefulWidget {
   @override
@@ -11,21 +12,24 @@ class JobApplicationPage extends StatefulWidget {
 }
 
 class _JobApplicationPageState extends State<JobApplicationPage> {
+  final JobPostingService _jobPostingService =
+      JobPostingService(httpClient: http.Client());
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _jobTitleController = TextEditingController();
   final TextEditingController _companyNameController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _jobTypeController = TextEditingController();
-  final TextEditingController _jobDescriptionController = TextEditingController();
+  final TextEditingController _jobDescriptionController =
+      TextEditingController();
   final TextEditingController _postedDateController = TextEditingController();
   final TextEditingController _closingDateController = TextEditingController();
-  final TextEditingController _companyLogoURLController = TextEditingController();
+  final TextEditingController _companyLogoURLController =
+      TextEditingController();
   final TextEditingController _salaryRangeController = TextEditingController();
 
   List<TextEditingController> _qualificationControllers = [];
   List<TextEditingController> _responsibilitiesControllers = [];
-
 
   String? _validateNotEmpty(String? value) {
     if (value == null || value.isEmpty) {
@@ -146,14 +150,6 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                 ),
                 SizedBox(height: 16.0),
                 TextFormField(
-                  decoration: InputDecoration(
-                      labelText: 'Company Name based on logged in user'),
-                  controller: _companyNameController,
-                  validator: _validateNotEmpty,
-                  readOnly: true,
-                ),
-                SizedBox(height: 16.0),
-                TextFormField(
                   decoration: InputDecoration(labelText: 'Location'),
                   controller: _locationController,
                   validator: _validateNotEmpty,
@@ -181,7 +177,9 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                   children: [
                     Expanded(
                       child: TextFormField(
-                        decoration: InputDecoration(labelText: 'Posted Date'),
+                        decoration: InputDecoration(
+                            labelText: 'Posted Date',
+                            suffixIcon: Icon(Icons.calendar_today, size: 16.0)),
                         controller: _postedDateController,
                         readOnly: true,
                       ),
@@ -189,7 +187,9 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                     SizedBox(width: 16.0),
                     Expanded(
                       child: TextFormField(
-                        decoration: InputDecoration(labelText: 'Closing Date'),
+                        decoration: InputDecoration(
+                            labelText: 'Closing Date',
+                            suffixIcon: Icon(Icons.calendar_today, size: 16.0)),
                         controller: _closingDateController,
                         validator: _validateNotEmpty,
                         onTap: () async {
@@ -210,68 +210,80 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                 ),
                 SizedBox(height: 16.0),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Company Logo URL'),
-                  controller: _companyLogoURLController,
-                  keyboardType: TextInputType.url,
-                  validator: _validateNotEmpty,
-                ),
-                SizedBox(height: 16.0),
-                TextFormField(
                   decoration: InputDecoration(labelText: 'Salary Range'),
                   controller: _salaryRangeController,
                   keyboardType: TextInputType.number,
                   validator: _validateNotEmpty,
                 ),
                 SizedBox(height: 16.0),
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Color(0xFF2c3a6d)),
-                  padding: MaterialStateProperty.all(
-                      EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0)),
-                ),
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    // Build the job application data as a map
-                    final jobApplicationData = {
-                      'job_title': _jobTitleController.text,
-                      'company_name': _companyNameController.text,
-                      'location': _locationController.text,
-                      'job_type': _jobTypeController.text,
-                      'job_description': _jobDescriptionController.text,
-                      'qualifications': _qualificationControllers
-                          .map((controller) => controller.text)
-                          .toList(),
-                      'responsibilities': _responsibilitiesControllers
-                          .map((controller) => controller.text)
-                          .toList(),
-                      'posted_date': _postedDateController.text,
-                      'closing_date': _closingDateController.text,
-                      'company_logo_url': _companyLogoURLController.text,
-                      'salary_range': _salaryRangeController.text,
-                    };
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(Color(0xFF2c3a6d)),
+                    padding: MaterialStateProperty.all(
+                        EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0)),
+                  ),
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      // Build the job application data as a map
+                      final jobApplicationData = {
+                        'title': _jobTitleController.text,
+                        // 'companyId': _companyNameController.text,
+                        'location': _locationController.text,
+                        'jobType': _jobTypeController.text,
+                        'description': _jobDescriptionController.text,
+                        'qualifications': _qualificationControllers
+                            .map((controller) => controller.text)
+                            .toList(),
+                        'responsibilities': _responsibilitiesControllers
+                            .map((controller) => controller.text)
+                            .toList(),
+                        'datePosted': _postedDateController.text,
+                        'dateClosing': _closingDateController.text,
+                        // 'company_logo_url': _companyLogoURLController.text,
+                        'salaryRange': _salaryRangeController.text,
+                      };
 
-                    try {
-                      // Send the job application data as a JSON object to the API
-                      final response = await http.post(
-                        Uri.parse('https://example.com/api/job_applications'),
-                        headers: {'Content-Type': 'application/json'},
-                        body: jsonEncode(jobApplicationData),
-                      );
+                      _jobPostingService
+                          .createJobPosting(
+                              title: _jobTitleController.text,
+                              location: _locationController.text,
+                              jobType: _jobTypeController.text,
+                              description: _jobDescriptionController.text,
+                              qualifications: _qualificationControllers
+                                  .map((controller) => controller.text)
+                                  .toList(),
+                              responsibilities: _responsibilitiesControllers
+                                  .map((controller) => controller.text)
+                                  .toList(),
+                              datePosted: _postedDateController.text,
+                              dateClosing: _closingDateController.text,
+                              salaryRange: _salaryRangeController.text)
+                          .then((value) => {})
+                          .catchError((error) => {}); // Error handling here
 
-                      if (response.statusCode == 200) {
-                        // Job application submitted successfully
-                        // ...
-                      } else {
-                        // API returned an error
-                        // ...
-                      }
-                    } catch (e) {
-                      // Error sending the API request
-                      // ...
+                      // try {
+                      //   // Send the job application data as a JSON object to the API
+                      //   final response = await http.post(
+                      //     Uri.parse('https://example.com/api/job_applications'),
+                      //     headers: {'Content-Type': 'application/json'},
+                      //     body: jsonEncode(jobApplicationData),
+                      //   );
+                      //
+                      //   if (response.statusCode == 200) {
+                      //     // Job application submitted successfully
+                      //     // ...
+                      //   } else {
+                      //     // API returned an error
+                      //     // ...
+                      //   }
+                      // } catch (e) {
+                      //   // Error sending the API request
+                      //   // ...
+                      // }
                     }
-                  }
-                },
-                child: Text('Submit'),
+                  },
+                  child: Text('Submit'),
                 ),
               ],
             ),
