@@ -36,6 +36,7 @@ class Data {
   late final String last;
   late final String email;
   late final String date;
+  late final String resumeId;
   late final String id;
 
   Data.fromJson(Map<String, dynamic> json){
@@ -43,6 +44,7 @@ class Data {
     last = json['last'];
     email = json['email'];
     date = json['date'];
+    resumeId = json['resumeId'];
     id = json['id'];
   }
 
@@ -52,6 +54,7 @@ class Data {
     _data['last'] = last;
     _data['email'] = email;
     _data['date'] = date;
+    _data['resumeId'] = resumeId;
     _data['id'] = id;
     return _data;
   }

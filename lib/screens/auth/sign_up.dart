@@ -22,6 +22,8 @@ class _SignUpPageState extends State<SignUpPage> {
   static final GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
   late String password;
   late String email;
+  late String first;
+  late String last;
 
   final String logoAssetPath = "assets/images/logo.png";
 
@@ -110,6 +112,56 @@ class _SignUpPageState extends State<SignUpPage> {
             padding: const EdgeInsets.only(bottom: 10),
             child: FormHelper.inputFieldWidget(
               context,
+              "First",
+              "First",
+                  (onValidateVal) {
+                if (onValidateVal.isEmpty) {
+                  return 'First Name can\'t be empty.';
+                }
+
+                return null;
+              },
+                  (onSavedVal) => {
+                first = onSavedVal,
+              },
+              initialValue: "",
+              borderFocusColor: Colors.white,
+              prefixIconColor: Colors.white,
+              borderColor: Colors.white,
+              textColor: Colors.white,
+              hintColor: Colors.white.withOpacity(0.7),
+              borderRadius: 10,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: FormHelper.inputFieldWidget(
+              context,
+              "Last",
+              "Last",
+                  (onValidateVal) {
+                if (onValidateVal.isEmpty) {
+                  return 'Last Name can\'t be empty.';
+                }
+
+                return null;
+              },
+                  (onSavedVal) => {
+                last = onSavedVal,
+              },
+              initialValue: "",
+              borderFocusColor: Colors.white,
+              prefixIconColor: Colors.white,
+              borderColor: Colors.white,
+              textColor: Colors.white,
+              hintColor: Colors.white.withOpacity(0.7),
+              borderRadius: 10,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: FormHelper.inputFieldWidget(
+              context,
               "Email",
               "Email",
                   (onValidateVal) {
@@ -181,6 +233,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   });
 
                   RegisterRequestModel model = RegisterRequestModel(
+                    first: first,
+                    last: last,
                     email: email,
                     password: password,
                     isAdmin: false,
