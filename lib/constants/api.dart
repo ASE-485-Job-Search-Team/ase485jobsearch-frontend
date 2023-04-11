@@ -5,4 +5,5 @@ class Api {
   static const String registerAPI = "/api/auth/register/user";
   static const String registerCompnayAPI = "/api/auth/register/admin";
   static const String userProfileAPI = "/api/profile";
+  static const String updateUserResumeAPI = "api/update/user/resume";
 }
