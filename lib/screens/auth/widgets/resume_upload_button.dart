@@ -8,12 +8,15 @@ class ResumeUploadButton extends StatefulWidget {
   ResumeUploadButton({required this.userID});
 
   @override
-  _ResumeUploadButtonState createState() => _ResumeUploadButtonState();
+  _ResumeUploadButtonState createState() => _ResumeUploadButtonState(userID: this.userID);
 }
 
 class _ResumeUploadButtonState extends State<ResumeUploadButton> {
   String _resumeFileName = '';
   final ResumeUploader _resumeUploader = ResumeUploader();
+  final userID;
+
+  _ResumeUploadButtonState({required this.userID});
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +31,31 @@ class _ResumeUploadButtonState extends State<ResumeUploadButton> {
               ),
             ElevatedButton(
               onPressed: () async {
-                String fileName = await _resumeUploader.uploadResume(widget.userID);
+                String fileName = await _resumeUploader.uploadResume(userID);
                 setState(() {
                   _resumeFileName = fileName;
                 });
+
+                // Show a dialog to inform the user that the upload was successful
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Resume Uploaded'),
+                      content: Text('Your resume has been uploaded successfully.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            // Close the dialog and navigate to the login page
+                            Navigator.of(context).popUntil((route) => route.isFirst);
+                            Navigator.pushNamed(context, '/login');
+                          },
+                          child: Text('OK'),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
               child: Text('Upload Resume (PDF)'),
               style: ButtonStyle(

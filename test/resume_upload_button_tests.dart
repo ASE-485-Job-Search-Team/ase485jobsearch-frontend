@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
-import 'package:jobsearchmobile/screens/my_applications/widgets/resume_upload_button.dart';
+import 'package:jobsearchmobile/screens/auth/widgets/resume_upload_button.dart';
 
 void main() {
   var test_userID = "user";

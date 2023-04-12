@@ -5,6 +5,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:jobsearchmobile/screens/home/widgets/custom_app_bar.dart';
 
+import '../../../models/user.dart';
+import '../../../services/auth_api_service.dart';
+
 class JobApplicationPage extends StatefulWidget {
   @override
   _JobApplicationPageState createState() => _JobApplicationPageState();
@@ -26,6 +29,7 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
   List<TextEditingController> _qualificationControllers = [];
   List<TextEditingController> _responsibilitiesControllers = [];
 
+  late User _user;
 
   String? _validateNotEmpty(String? value) {
     if (value == null || value.isEmpty) {
@@ -37,10 +41,37 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
   @override
   void initState() {
     super.initState();
+    _loadUserData();
     _postedDateController.text =
         DateFormat('yyyy-MM-dd').format(DateTime.now());
     _qualificationControllers.add(TextEditingController());
     _responsibilitiesControllers.add(TextEditingController());
+  }
+
+  void _loadUserData() async {
+    late User user;
+    String response = await APIService.getUserProfile();
+
+    final model = jsonDecode(response);
+    final isAdmin = model['data']['isAdmin'];
+
+    if(isAdmin){
+      user = User(
+        id: model['data']['id'],
+        name: model['data']['company'],
+        email: model['data']['email'],
+      );
+    } else {
+      user = User(
+        id: model['data']['id'],
+        name: model['data']['first'] + ' ' + model['data']['last'],
+        email: model['data']['email'],
+      );
+    }
+
+    setState(() {
+      _user = user;
+    });
   }
 
   @override
@@ -233,6 +264,7 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                   if (_formKey.currentState!.validate()) {
                     // Build the job application data as a map
                     final jobApplicationData = {
+                      'companyId': _user.id,
                       'job_title': _jobTitleController.text,
                       'company_name': _companyNameController.text,
                       'location': _locationController.text,
