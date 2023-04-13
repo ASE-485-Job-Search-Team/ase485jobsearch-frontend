@@ -87,7 +87,7 @@ class APIService {
       'Authorization': 'Basic ${loginDetails!.data?.token}'
     };
 
-    var url = Uri.http(Api.baseUrl, Api.userProfileAPI);
+    var url = Uri.http(Api.authUrl, Api.userProfileAPI);
 
     var response = await client.get(
       url,
