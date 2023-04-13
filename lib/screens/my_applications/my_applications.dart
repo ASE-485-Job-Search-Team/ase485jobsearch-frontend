@@ -8,7 +8,7 @@ import 'package:jobsearchmobile/screens/home/widgets/pie_chart.dart';
 import 'package:jobsearchmobile/screens/my_applications/widgets/application_card.dart';
 import 'package:jobsearchmobile/screens/my_applications/widgets/create_app_button.dart';
 import 'package:http/http.dart' as http;
-import 'package:jobsearchmobile/screens/my_applications/widgets/resume_upload_button.dart';
+import 'package:jobsearchmobile/screens/auth/widgets/resume_upload_button.dart';
 import '../../constants/api.dart';
 
 class MyApplications extends StatefulWidget {

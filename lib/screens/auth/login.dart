@@ -1,5 +1,12 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import '../home/widgets/custom_app_bar.dart';
+import 'package:snippet_coder_utils/FormHelper.dart';
+import 'package:snippet_coder_utils/ProgressHUD.dart';
+import 'package:snippet_coder_utils/hex_color.dart';
+
+import '../../services/auth_api_service.dart';
+import '../../constants/api.dart';
+import '../../models/auth/login_request.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -9,106 +16,279 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _formKey = GlobalKey<FormState>();
+  bool isApiCallProcess = false;
+  bool hidePassword = true;
+  GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
+  late String email;
+  late String password;
 
-  String? _validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your email';
-    } else if (!RegExp(r'^[\w-.]+@([\w-]+.)+[\w-]{2,4}$').hasMatch(value)) {
-      return 'Please enter a valid email';
-    }
-    return null;
-  }
+  final String logoAssetPath = "assets/images/logo.png";
 
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your password';
-    } else if (value.length < 6) {
-      return 'Password must be at least 6 characters';
-    }
-    return null;
-  }
-
-  void _handleLogin() {
-    if (_formKey.currentState!.validate()) {
-// Perform login
-// ...
-      // Navigate to dashboard page
-      Navigator.pushNamed(context, '/company');
-    }
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: "Log In"),
-      body: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        'Login',
-                        style: TextStyle(
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.bold,
-                            color: (Color(0xFF2c3a6d))
-                        ),
-                      ),
-                      SizedBox(height: 16.0),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        validator: _validateEmail,
-                      ),
-                      SizedBox(height: 16.0),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        obscureText: true,
-                        validator: _validatePassword,
-                      ),
-                      SizedBox(height: 16.0),
-                      ElevatedButton(
-                        onPressed: _handleLogin,
-                        child: Text('Login'),
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(Color(0xFF2c3a6d)),
-                          padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0)),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ]),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: HexColor("#283B71"),
+        body: ProgressHUD(
+          child: Form(
+            key: globalFormKey,
+            child: _loginUI(context),
+          ),
+          inAsyncCall: isApiCallProcess,
+          opacity: 0.3,
+          key: UniqueKey(),
         ),
       ),
     );
+  }
+
+  Widget _loginUI(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height / 5.2,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.white,
+                  Colors.white,
+                ],
+              ),
+              borderRadius: BorderRadius.only(
+                //topLeft: Radius.circular(100),
+                //topRight: Radius.circular(150),
+                bottomRight: Radius.circular(50),
+                bottomLeft: Radius.circular(50),
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                IconButton(
+                  padding: EdgeInsets.all(8),
+                  alignment: Alignment.topLeft,
+                  tooltip: 'Go back',
+                  enableFeedback: true,
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: Image.asset(
+                    logoAssetPath,
+                    fit: BoxFit.contain,
+                    height: 100,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(left: 20, bottom: 30, top: 50),
+            child: Text(
+              "Login",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 25,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: FormHelper.inputFieldWidget(
+              context,
+              "Email",
+              "Email",
+                  (onValidateVal) {
+                if (onValidateVal.isEmpty) {
+                  return 'email can\'t be empty.';
+                }
+
+                return null;
+              },
+                  (onSavedVal) => {
+                email = onSavedVal,
+              },
+              initialValue: "",
+              obscureText: false,
+              borderFocusColor: Colors.white,
+              prefixIconColor: Colors.white,
+              borderColor: Colors.white,
+              textColor: Colors.white,
+              hintColor: Colors.white.withOpacity(0.7),
+              borderRadius: 10,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: FormHelper.inputFieldWidget(
+              context,
+              "Password",
+              "Password",
+                  (onValidateVal) {
+                if (onValidateVal.isEmpty) {
+                  return 'Password can\'t be empty.';
+                }
+
+                return null;
+              },
+                  (onSavedVal) => {
+                password = onSavedVal,
+              },
+              initialValue: "",
+              obscureText: hidePassword,
+              borderFocusColor: Colors.white,
+              prefixIconColor: Colors.white,
+              borderColor: Colors.white,
+              textColor: Colors.white,
+              hintColor: Colors.white.withOpacity(0.7),
+              borderRadius: 10,
+              suffixIcon: IconButton(
+                onPressed: () {
+                  setState(() {
+                    hidePassword = !hidePassword;
+                  });
+                },
+                color: Colors.white.withOpacity(0.7),
+                icon: Icon(
+                  hidePassword ? Icons.visibility_off : Icons.visibility,
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+                padding: const EdgeInsets.only(
+                  right: 25,
+                )),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Center(
+            child: FormHelper.submitButton(
+              "Login",
+                  () {
+                if (validateAndSave()) {
+                  setState(() {
+                    isApiCallProcess = true;
+                  });
+
+                  LoginRequestModel model = LoginRequestModel(
+                    email: email,
+                    password: password,
+                  );
+
+                  APIService.login(model).then(
+                        (response) {
+                      setState(() {
+                        isApiCallProcess = false;
+                      });
+
+                      if (response) {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/home',
+                              (route) => false,
+                        );
+                      } else {
+                        FormHelper.showSimpleAlertDialog(
+                          context,
+                          Api.appName,
+                          "Invalid Username/Password !!",
+                          "OK",
+                              () {
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      }
+                    },
+                  );
+                }
+              },
+              btnColor: HexColor("283B71"),
+              borderColor: Colors.white,
+              txtColor: Colors.white,
+              borderRadius: 10,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          const Center(
+            child: Text(
+              "OR",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                right: 25,
+              ),
+              child: RichText(
+                text: TextSpan(
+                  style: const TextStyle(color: Colors.white, fontSize: 14.0),
+                  children: <TextSpan>[
+                    const TextSpan(
+                      text: 'Dont have an account? ',
+                    ),
+                    TextSpan(
+                      text: 'Sign up',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.pushNamed(
+                            context,
+                            '/select',
+                          );
+                        },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool validateAndSave() {
+    final form = globalFormKey.currentState;
+    if (form!.validate()) {
+      form.save();
+      return true;
+    }
+    return false;
   }
 }

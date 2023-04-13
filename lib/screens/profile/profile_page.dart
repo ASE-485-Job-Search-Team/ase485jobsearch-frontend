@@ -1,7 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:jobsearchmobile/models/user.dart';
-import 'package:jobsearchmobile/screens/home/widgets/custom_app_bar.dart';
-import 'package:jobsearchmobile/services/user_service.dart';
+import 'package:jobsearchmobile/services/auth_api_service.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -20,13 +21,26 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _loadUserData() async {
-    final UserService userService = UserService();
-    // Replace this with actual user data fetched from a service
-    final User user = User(
-      id: '1',
-      name: 'John Doe',
-      email: 'johndoe@example.com',
-    );
+    late User user;
+    String response = await APIService.getUserProfile();
+
+    final model = jsonDecode(response);
+    final isAdmin = model['data']['isAdmin'];
+
+    if(isAdmin){
+      user = User(
+        id: model['data']['id'],
+        name: model['data']['company'],
+        email: model['data']['email'],
+      );
+    } else {
+      user = User(
+        id: model['data']['id'],
+        name: model['data']['first'] + ' ' + model['data']['last'],
+        email: model['data']['email'],
+      );
+    }
+
     setState(() {
       _user = user;
     });
