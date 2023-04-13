@@ -20,7 +20,7 @@ class APIService {
     };
 
     var url = Uri.http(
-      Api.baseUrl,
+      Api.authUrl,
       Api.loginAPI,
     );
     var response = await client.post(
@@ -45,7 +45,7 @@ class APIService {
     };
 
     var url = Uri.http(
-      Api.baseUrl,
+      Api.authUrl,
       Api.registerAPI,
     );
 
@@ -66,7 +66,7 @@ class APIService {
     };
 
     var url = Uri.http(
-      Api.baseUrl,
+      Api.authUrl,
       Api.registerCompnayAPI,
     );
 
@@ -87,7 +87,7 @@ class APIService {
       'Authorization': 'Basic ${loginDetails!.data?.token}'
     };
 
-    var url = Uri.http(Api.baseUrl, Api.userProfileAPI);
+    var url = Uri.http(Api.authUrl, Api.userProfileAPI);
 
     var response = await client.get(
       url,
