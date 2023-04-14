@@ -5,19 +5,19 @@ import 'package:flutter/material.dart';
 import 'job_info.dart';
 
 class JobApplication {
-  final int id;
+  final String id;
   final DateTime dateApplied;
   final JobApplicationStatus status;
-  final int jobSeekerId;
-  final int jobPostingId;
+  final String userId;
+  final String jobId;
   final JobPosting jobPosting;
 
   JobApplication(
       {required this.id,
       required this.dateApplied,
       required this.status,
-      required this.jobSeekerId,
-      required this.jobPostingId,
+      required this.userId,
+      required this.jobId,
       required this.jobPosting});
 
   factory JobApplication.fromJson(Map<String, dynamic> json) {
@@ -25,8 +25,8 @@ class JobApplication {
         id: json['id'],
         dateApplied: DateTime.parse(json['dateApplied']),
         status: mapStatus(json['status']),
-        jobSeekerId: json['jobSeekerId'],
-        jobPostingId: json['jobPostingId'],
+        userId: json['userId'],
+        jobId: json['jobId'],
         jobPosting: JobPosting.fromJson(json['jobPosting']));
   }
 
@@ -49,8 +49,8 @@ class JobApplication {
         'id': id,
         'dateApplied': dateApplied.toIso8601String(),
         'status': status,
-        'jobSeekerId': jobSeekerId,
-        'jobPostingId': jobPostingId,
+        'userId': userId,
+        'jobId': jobId,
         'jobPosting': jobPosting
       };
 }

@@ -21,8 +21,8 @@ class MyApplications extends StatefulWidget {
 class _MyApplicationsState extends State<MyApplications> {
   Future<List<JobApplication>> fetchJobApplicationsForBuilder(
       {String query = ''}) async {
-    final response =
-        await http.get(Uri.parse('${Api.baseUrl}/applications?$query'));
+    final response = await http.get(Uri.parse(
+        '${Api.baseUrl}/users/6juMrrOUv3vHOjmlMczu/applications?$query')); //TODO: Replace with user id
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
       return jsonData
@@ -78,6 +78,7 @@ class _MyApplicationsState extends State<MyApplications> {
               'Overview',
               style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
             ),
+            CreateAppButton(),
             FutureBuilder(
                 future: fetchJobApplicationsForBuilder(),
                 builder: (context, snapshot) {
