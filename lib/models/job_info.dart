@@ -1,6 +1,7 @@
 class JobPosting {
   final String id;
   final String title;
+  final String companyId;
   final String company;
   final String location;
   final String jobType;
@@ -15,6 +16,7 @@ class JobPosting {
   JobPosting({
     required this.id,
     required this.title,
+    required this.companyId,
     required this.company,
     required this.location,
     required this.jobType,
@@ -31,6 +33,7 @@ class JobPosting {
     return JobPosting(
         id: json['id'],
         title: json['title'],
+        companyId: json['companyId'],
         company: json['company'],
         location: json['location'],
         jobType: json['jobType'],
@@ -47,6 +50,7 @@ class JobPosting {
     return {
       'id': id,
       'title': title,
+      'companyId': companyId,
       'company': company,
       'location': location,
       'jobType': jobType,

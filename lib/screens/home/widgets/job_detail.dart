@@ -2,21 +2,29 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:jobsearchmobile/screens/home/widgets/bullet_widgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:jobsearchmobile/services/job_application_service.dart';
 import '../../../models/job_info.dart';
 import '../../../models/job_application.dart';
 
-
-class JobDetail extends StatelessWidget {
+class JobDetail extends StatefulWidget {
   final JobPosting jobPosting;
 
   const JobDetail({Key? key, required this.jobPosting}) : super(key: key);
+
+  @override
+  State<JobDetail> createState() => _JobDetailState();
+}
+
+class _JobDetailState extends State<JobDetail> {
+  final jobApplicationService =
+      JobApplicationService(httpClient: http.Client());
 
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
       Container(
         height: 700,
-        padding: EdgeInsets.fromLTRB(32.0, 32.0, 32.0, 70.0),
+        padding: const EdgeInsets.fromLTRB(32.0, 32.0, 32.0, 70.0),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -27,16 +35,16 @@ class JobDetail extends StatelessWidget {
                   Container(
                     width: 40.0,
                     height: 40.0,
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
                         color: Colors.grey.withOpacity(0.1)),
-                    child: Image.network(jobPosting.companyLogo),
+                    child: Image.network(widget.jobPosting.companyLogo),
                   ),
                   const SizedBox(
                     width: 8.0,
                   ),
-                  Text(jobPosting.company,
+                  Text(widget.jobPosting.company,
                       style: const TextStyle(
                           fontSize: 18.0, fontWeight: FontWeight.w500))
                 ],
@@ -45,7 +53,7 @@ class JobDetail extends StatelessWidget {
                 height: 16.0,
               ),
               Text(
-                jobPosting.title,
+                widget.jobPosting.title,
                 style: const TextStyle(
                     fontSize: 24.0, fontWeight: FontWeight.w600),
                 textAlign: TextAlign.left,
@@ -67,7 +75,7 @@ class JobDetail extends StatelessWidget {
                         width: 4.0,
                       ),
                       Text(
-                        jobPosting.location,
+                        widget.jobPosting.location,
                         style: TextStyle(
                             fontSize: 14.0, color: Colors.grey.shade700),
                       )
@@ -84,7 +92,7 @@ class JobDetail extends StatelessWidget {
                         width: 4.0,
                       ),
                       Text(
-                        jobPosting.jobType,
+                        widget.jobPosting.jobType,
                         style: TextStyle(
                             fontSize: 14.0, color: Colors.grey.shade700),
                       )
@@ -95,7 +103,7 @@ class JobDetail extends StatelessWidget {
               const SizedBox(
                 height: 24.0,
               ),
-              Text(
+              const Text(
                 'Job Description',
                 style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
               ),
@@ -103,7 +111,7 @@ class JobDetail extends StatelessWidget {
                 height: 8.0,
               ),
               Text(
-                jobPosting.description,
+                widget.jobPosting.description,
                 style: TextStyle(
                     fontWeight: FontWeight.w300,
                     height: 1.5,
@@ -119,7 +127,7 @@ class JobDetail extends StatelessWidget {
               const SizedBox(
                 height: 8.0,
               ),
-              BulletList(jobPosting.qualifications),
+              BulletList(widget.jobPosting.qualifications),
               const SizedBox(
                 height: 16.0,
               ),
@@ -130,7 +138,7 @@ class JobDetail extends StatelessWidget {
               const SizedBox(
                 height: 8.0,
               ),
-              BulletList(jobPosting.responsibilities),
+              BulletList(widget.jobPosting.responsibilities),
             ],
           ),
         ),
@@ -147,40 +155,28 @@ class JobDetail extends StatelessWidget {
                 height: 42.0,
                 child: ElevatedButton(
                   onPressed: () async {
-                    // Create a JobApplication object
-                    final jobApplication = JobApplication(
-                      id: 0, // Provide an appropriate ID or keep it 0 for auto-increment
-                      dateApplied: DateTime.now(),
-                      status: JobApplicationStatus.applied,
-                      jobSeekerId: 1, // Replace with the actual jobSeekerId
-                      jobPostingId: int.parse(jobPosting.id),
-                      jobPosting: jobPosting,
-                    );
-
-                    // Convert the JobApplication object to JSON
-                    final jobApplicationJson = json.encode(jobApplication.toJson());
-
-                    // Send a POST request to the API with the JSON data
-                    var response = await http.post(
-                      Uri.parse('https://example.com/api/apply'),
-                      headers: {'Content-Type': 'application/json'},
-                      body: jobApplicationJson,
-                    );
-
-                    if (response.statusCode == 200) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Application Submitted!'),
-                        ),
-                      );
-                      Navigator.pop(context);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Error submitting application.'),
-                        ),
-                      );
-                    }
+                    const String userId = '6juMrrOUv3vHOjmlMczu';
+                    final String jobId = widget.jobPosting.id;
+                    jobApplicationService
+                        .applyForJob(userId, jobId)
+                        .then((_) => {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Application Submitted!'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              ),
+                              Navigator.pop(context)
+                            })
+                        .catchError((error) => {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(error.message),
+                                  backgroundColor: Colors.red,
+                                ),
+                              ),
+                              Navigator.pop(context)
+                            });
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF2c3a6d),
@@ -189,7 +185,7 @@ class JobDetail extends StatelessWidget {
                   child: const Text(
                     'Apply',
                     style:
-                    TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0),
+                        TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0),
                   ),
                 ),
               ),
