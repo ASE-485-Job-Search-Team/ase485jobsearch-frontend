@@ -9,6 +9,4 @@ class Api {
   static const String registerCompnayAPI = "/api/auth/register/admin";
   static const String userProfileAPI = "/api/profile";
   static const String updateUserResumeAPI = "api/update/user/resume";
-  static const String baseUrl = 'http://localhost:5050/api';
-  static const String jobPostingsUrl = '$baseUrl/jobs/job-postings';
 }

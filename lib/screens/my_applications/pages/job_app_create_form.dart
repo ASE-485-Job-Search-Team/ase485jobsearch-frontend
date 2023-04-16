@@ -15,6 +15,7 @@ class JobApplicationPage extends StatefulWidget {
 }
 
 class _JobApplicationPageState extends State<JobApplicationPage> {
+  late User _user;
   final JobPostingService _jobPostingService =
       JobPostingService(httpClient: http.Client());
   final _formKey = GlobalKey<FormState>();
@@ -33,8 +34,6 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
 
   List<TextEditingController> _qualificationControllers = [];
   List<TextEditingController> _responsibilitiesControllers = [];
-
-  late User _user;
 
   String? _validateNotEmpty(String? value) {
     if (value == null || value.isEmpty) {
@@ -248,39 +247,6 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                   validator: _validateNotEmpty,
                 ),
                 SizedBox(height: 16.0),
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Color(0xFF2c3a6d)),
-                  padding: MaterialStateProperty.all(
-                      EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0)),
-                ),
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    // Build the job application data as a map
-                    final jobApplicationData = {
-                      'companyId': _user.id,
-                      'job_title': _jobTitleController.text,
-                      'company_name': _companyNameController.text,
-                      'location': _locationController.text,
-                      'job_type': _jobTypeController.text,
-                      'job_description': _jobDescriptionController.text,
-                      'qualifications': _qualificationControllers
-                          .map((controller) => controller.text)
-                          .toList(),
-                      'responsibilities': _responsibilitiesControllers
-                          .map((controller) => controller.text)
-                          .toList(),
-                      'posted_date': _postedDateController.text,
-                      'closing_date': _closingDateController.text,
-                      'company_logo_url': _companyLogoURLController.text,
-                      'salary_range': _salaryRangeController.text,
-                    };
-                    try {
-                      final response = await http.post(
-                        Uri.parse('https://example.com/api/job_applications'),
-                        headers: {'Content-Type': 'application/json'},
-                        body: jsonEncode(jobApplicationData),
-                      );
                 ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor:
@@ -290,28 +256,10 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                   ),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      // Build the job application data as a map
-                      final jobApplicationData = {
-                        'title': _jobTitleController.text,
-                        // 'companyId': _companyNameController.text,
-                        'location': _locationController.text,
-                        'jobType': _jobTypeController.text,
-                        'description': _jobDescriptionController.text,
-                        'qualifications': _qualificationControllers
-                            .map((controller) => controller.text)
-                            .toList(),
-                        'responsibilities': _responsibilitiesControllers
-                            .map((controller) => controller.text)
-                            .toList(),
-                        'datePosted': _postedDateController.text,
-                        'dateClosing': _closingDateController.text,
-                        // 'company_logo_url': _companyLogoURLController.text,
-                        'salaryRange': _salaryRangeController.text,
-                      };
-
                       _jobPostingService
                           .createJobPosting(
                               title: _jobTitleController.text,
+                              companyId: _user.id,
                               location: _locationController.text,
                               jobType: _jobTypeController.text,
                               description: _jobDescriptionController.text,
@@ -325,9 +273,8 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                               dateClosing: _closingDateController.text,
                               salaryRange: _salaryRangeController.text)
                           .then((value) => {})
-                          .catchError((error) => {}); // Error handling here
-
-                      if (response.statusCode == 200) {
+                          .catchError((error) => {}); // Error handling hereb
+                      /*if (response.statusCode == 200) {
                         // Job application submitted successfully
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -353,6 +300,7 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                           backgroundColor: Colors.red,
                         ),
                       );
+                       */
                       // try {
                       //   // Send the job application data as a JSON object to the API
                       //   final response = await http.post(

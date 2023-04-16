@@ -128,7 +128,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
-    return Scaffold(
+    /*return Scaffold(
       backgroundColor: Colors.grey[200],
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -193,6 +193,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
+    */
     );
   }
 }
