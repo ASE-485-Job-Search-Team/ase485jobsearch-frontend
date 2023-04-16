@@ -36,23 +36,6 @@ class _MyJobPostingsState extends State<MyJobPostings> {
     }
   }
 
-  // Map<JobApplicationStatus, int> countByStatus(
-  //     List<JobApplication> jobApplications) {
-  //   Map<JobApplicationStatus, int> tmpStatusCount = {
-  //     JobApplicationStatus.applied: 0,
-  //     JobApplicationStatus.underReview: 0,
-  //     JobApplicationStatus.offered: 0,
-  //     JobApplicationStatus.rejected: 0,
-  //     JobApplicationStatus.unknown: 0,
-  //   };
-  //   for (var application in jobApplications) {
-  //     if (tmpStatusCount.containsKey(application.status)) {
-  //       tmpStatusCount.update(application.status, (value) => value + 1);
-  //     }
-  //   }
-  //   return tmpStatusCount;
-  // }
-
   Map<DateTime, List<JobPosting>> mapByDate(List<JobPosting> jobPostings) {
     final Map<DateTime, List<JobPosting>> tmpJobPostingsByDate = {};
     jobPostings.sort((a, b) => b.datePosted.compareTo(a.datePosted));
@@ -64,7 +47,6 @@ class _MyJobPostingsState extends State<MyJobPostings> {
         tmpJobPostingsByDate[date] = [jobPosting];
       }
     }
-    print(tmpJobPostingsByDate);
     return tmpJobPostingsByDate;
   }
 
@@ -80,38 +62,6 @@ class _MyJobPostingsState extends State<MyJobPostings> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // const Text(
-                  //   'Overview',
-                  //   style:
-                  //       TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
-                  // ),
-                  // // CreateAppButton(),
-                  // FutureBuilder(
-                  //     future: fetchJobPostingForBuilder(),
-                  //     builder: (context, snapshot) {
-                  //       if (snapshot.hasData) {
-                  //         final jobApplications =
-                  //             snapshot.data as List<JobApplication>;
-                  //         final jobApplicationsByStatus =
-                  //             countByStatus(jobApplications);
-                  //         return JobApplicationChart(
-                  //           applied: jobApplicationsByStatus[
-                  //               JobApplicationStatus.applied],
-                  //           underReview: jobApplicationsByStatus[
-                  //               JobApplicationStatus.underReview],
-                  //           offered: jobApplicationsByStatus[
-                  //               JobApplicationStatus.offered],
-                  //           rejected: jobApplicationsByStatus[
-                  //               JobApplicationStatus.rejected],
-                  //           unknown: jobApplicationsByStatus[
-                  //               JobApplicationStatus.unknown],
-                  //         );
-                  //       } else {
-                  //         return const Center(
-                  //           child: CircularProgressIndicator(),
-                  //         );
-                  //       }
-                  //     }),
                   const Text(
                     'Job Postings',
                     style:
@@ -129,30 +79,33 @@ class _MyJobPostingsState extends State<MyJobPostings> {
                           return Column(
                             children:
                                 jobPostingsByDate.entries.map((jobPosting) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    DateFormat.yMMMMd()
-                                        .format(jobPosting.key)
-                                        .toUpperCase(),
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey.shade500,
+                              return Padding(
+                                padding: EdgeInsets.only(bottom: 16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      DateFormat.yMMMMd()
+                                          .format(jobPosting.key)
+                                          .toUpperCase(),
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey.shade500,
+                                      ),
                                     ),
-                                  ),
-                                  const Divider(),
-                                  Column(
-                                    children:
-                                        jobPosting.value.map((jobPosting) {
-                                      return JobPostingItem(
-                                        jobPosting: jobPosting,
-                                      );
-                                    }).toList(),
-                                  ),
-                                ],
+                                    const Divider(),
+                                    Column(
+                                      children:
+                                          jobPosting.value.map((jobPosting) {
+                                        return JobPostingItem(
+                                          jobPosting: jobPosting,
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ],
+                                ),
                               );
                             }).toList(),
                           );

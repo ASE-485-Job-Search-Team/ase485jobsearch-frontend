@@ -59,10 +59,6 @@ class JobPostingItem extends StatelessWidget {
                       ]),
                 ],
               ),
-              // IconButton(
-              //   onPressed: () => {},
-              //   icon: const Icon(Icons.bookmark_outline),
-              // )
             ],
           ),
           Row(
@@ -88,7 +84,9 @@ class JobPostingItem extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const ApplicantsList()),
+                          builder: (context) => ApplicantsList(
+                                jobPosting: jobPosting,
+                              )),
                     );
                   },
                   child: Chip(

@@ -3,10 +3,12 @@ import 'package:intl/intl.dart';
 import 'package:jobsearchmobile/services/job_application_service.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../models/job_info.dart';
 import '../../profile/widgets/resume_reader.dart';
 
 class ApplicantsList extends StatefulWidget {
-  const ApplicantsList({Key? key}) : super(key: key);
+  final JobPosting jobPosting;
+  const ApplicantsList({Key? key, required this.jobPosting}) : super(key: key);
 
   @override
   State<ApplicantsList> createState() => _ApplicantsListState();
@@ -23,8 +25,8 @@ class _ApplicantsListState extends State<ApplicantsList> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           foregroundColor: Colors.grey.shade900,
-          title: const Text(
-            'Software Development Engineer',
+          title: Text(
+            widget.jobPosting.title,
           ),
         ),
         body: Padding(
@@ -43,7 +45,7 @@ class _ApplicantsListState extends State<ApplicantsList> {
               FutureBuilder(
                   future:
                       _jobApplicationService.getJobApplicationsFromJobPosting(
-                          'nR3nWouQJIR3fgyIggHP', 'NthmjGZDGhMBOCaJdHLZ'),
+                          widget.jobPosting.companyId, widget.jobPosting.id),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
