@@ -10,7 +10,7 @@ class ResumeUploadPage extends StatefulWidget {
 
   @override
   _ResumeUploadPage createState() => _ResumeUploadPage();
-  }
+}
 
 class _ResumeUploadPage extends State<ResumeUploadPage> {
   late User _user;
@@ -28,17 +28,20 @@ class _ResumeUploadPage extends State<ResumeUploadPage> {
     final model = jsonDecode(response);
     final isAdmin = model['data']['isAdmin'];
 
-    if(isAdmin){
+    if (isAdmin) {
       user = User(
         id: model['data']['id'],
         name: model['data']['company'],
         email: model['data']['email'],
+        isAdmin: true,
       );
     } else {
       user = User(
         id: model['data']['id'],
         name: model['data']['first'] + ' ' + model['data']['last'],
         email: model['data']['email'],
+        resume: model['data']['resume'],
+        isAdmin: false,
       );
     }
 
@@ -46,7 +49,6 @@ class _ResumeUploadPage extends State<ResumeUploadPage> {
       _user = user;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +65,9 @@ class _ResumeUploadPage extends State<ResumeUploadPage> {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
-            ResumeUploadButton(userID: _user.id,),
+            ResumeUploadButton(
+              userID: _user.id,
+            ),
           ],
         ),
       ),

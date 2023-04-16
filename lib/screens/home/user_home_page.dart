@@ -3,11 +3,13 @@ import 'package:jobsearchmobile/screens/home/widgets/custom_app_bar.dart';
 import 'package:jobsearchmobile/screens/home/widgets/search_bar.dart';
 import 'package:jobsearchmobile/screens/home/widgets/tag_list.dart';
 
+import '../../models/user.dart';
 import 'widgets/app_bar.dart';
 import 'widgets/job_posting_list.dart';
 
 class UserHomePage extends StatelessWidget {
-  const UserHomePage({Key? key}) : super(key: key);
+  final User user;
+  const UserHomePage({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +21,12 @@ class UserHomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            HomeAppBar(),
-            HomeSearchBar(),
-            TagList(),
+            HomeAppBar(
+              user: user,
+            ),
+            // HomeSearchBar(),
+            // TagList(),
+            SizedBox(height: 16.0),
             HomeJobPostingList(),
           ],
         ),
