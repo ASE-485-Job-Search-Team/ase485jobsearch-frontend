@@ -8,7 +8,8 @@ class JobApplication {
   final String id;
   final DateTime dateApplied;
   final JobApplicationStatus status;
-  final String userId;
+  final String name;
+  final String resumeUrl;
   final String jobId;
   final JobPosting jobPosting;
 
@@ -16,7 +17,8 @@ class JobApplication {
       {required this.id,
       required this.dateApplied,
       required this.status,
-      required this.userId,
+      required this.name,
+      required this.resumeUrl,
       required this.jobId,
       required this.jobPosting});
 
@@ -25,7 +27,8 @@ class JobApplication {
         id: json['id'],
         dateApplied: DateTime.parse(json['dateApplied']),
         status: mapStatus(json['status']),
-        userId: json['userId'],
+        name: json['name'],
+        resumeUrl: json['resumeUrl'],
         jobId: json['jobId'],
         jobPosting: JobPosting.fromJson(json['jobPosting']));
   }
@@ -49,7 +52,8 @@ class JobApplication {
         'id': id,
         'dateApplied': dateApplied.toIso8601String(),
         'status': status,
-        'userId': userId,
+        'name': name,
+        'resumeUrl': resumeUrl,
         'jobId': jobId,
         'jobPosting': jobPosting
       };
