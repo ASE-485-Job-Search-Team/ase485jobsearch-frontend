@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:jobsearchmobile/models/auth/create_user_response.dart';
 import 'package:jobsearchmobile/models/auth/login_request.dart';
 import 'package:jobsearchmobile/models/auth/login_response.dart';
 import 'package:jobsearchmobile/models/auth/register_company_request.dart';
@@ -10,6 +11,7 @@ import 'package:jobsearchmobile/models/auth/register_response.dart';
 import 'package:jobsearchmobile/services/auth_shared_service.dart';
 
 import '../constants/api.dart';
+import '../models/auth/create_user_request.dart';
 import '../models/user.dart';
 
 class APIService {
@@ -127,5 +129,27 @@ class APIService {
     }
 
     return user;
+  }
+
+  static Future<CreateUserResponseModel> createUserForFb(CreateUserRequestModel model,) async {
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+    };
+
+    const String baseUrl = 'localhost:5050';
+    const String createAPI = "/api/users/create";
+
+    var url = Uri.http(
+      baseUrl,
+      createAPI,
+    );
+
+    var response = await client.post(
+      url,
+      headers: requestHeaders,
+      body: jsonEncode(model.toJson()),
+    );
+
+    return createUserResponseJSON(response.body);
   }
 }
