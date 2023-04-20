@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:jobsearchmobile/models/auth/create_user_request.dart';
+import 'package:jobsearchmobile/models/auth/login_request.dart';
 import 'package:jobsearchmobile/models/auth/register_request.dart';
 import 'package:jobsearchmobile/services/auth_api_service.dart';
 
@@ -240,38 +242,66 @@ class _SignUpPageState extends State<SignUpPage> {
                     isAdmin: false,
                   );
 
-                  APIService.register(model).then(
-                        (response) {
-                      setState(() {
-                        isApiCallProcess = false;
-                      });
+                  APIService.register(model).then((response) {
+                    if (response.data != null) {
+                      // Call the create user to firestore
+                      CreateUserRequestModel cuModel = CreateUserRequestModel(
+                          userId: response.data!.id,
+                          fullName: response.data!.first + " " + response.data!.last);
 
-                      if (response.data != null) {
-                        FormHelper.showSimpleAlertDialog(
-                          context,
-                          Api.appName,
-                          "Registration Successful. Please login to the account",
-                          "OK",
-                              () {
-                            Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              '/login',
-                                  (route) => false,
-                            );
-                          },
-                        );
-                      } else {
-                        FormHelper.showSimpleAlertDialog(
-                          context,
-                          Api.appName,
-                          response.message,
-                          "OK",
-                              () {
-                            Navigator.of(context).pop();
-                          },
-                        );
-                      }
-                    },
+                      APIService.createUserForFb(cuModel).then((response2) {
+                        if (response2.post == 'success') {
+                          LoginRequestModel lrModel = LoginRequestModel(
+                              email: email, password: password);
+                          APIService.login(lrModel).then((response) {
+                              setState(() {
+                                isApiCallProcess = false;
+                              });
+
+                              if (response) {
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  '/resume',
+                                      (route) => false,
+                                );
+                              } else {
+                                FormHelper.showSimpleAlertDialog(
+                                  context,
+                                  Api.appName,
+                                  "Failed to login user",
+                                  "OK",
+                                      () {
+                                    Navigator.of(context).pop();
+                                  },
+                                );
+                              }
+                            },
+                          );
+                        }
+                        else {
+                          FormHelper.showSimpleAlertDialog(
+                            context,
+                            Api.appName,
+                            "Failed to register user to firestore",
+                            "OK",
+                                () {
+                              Navigator.of(context).pop();
+                            },
+                          );
+                        }
+                      });
+                    } else {
+                      FormHelper.showSimpleAlertDialog(
+                        context,
+                        Api.appName,
+                        "Failed to register user to mongodb",
+                        "OK",
+                            () {
+                          Navigator.of(context).pop();
+                        },
+                      );
+                    }
+                  }
                   );
                 }
               },
