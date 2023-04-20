@@ -15,6 +15,7 @@ class JobApplicationPage extends StatefulWidget {
 }
 
 class _JobApplicationPageState extends State<JobApplicationPage> {
+  late User _user;
   final JobPostingService _jobPostingService =
       JobPostingService(httpClient: http.Client());
   final _formKey = GlobalKey<FormState>();
@@ -33,8 +34,6 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
 
   List<TextEditingController> _qualificationControllers = [];
   List<TextEditingController> _responsibilitiesControllers = [];
-
-  late User _user;
 
   String? _validateNotEmpty(String? value) {
     if (value == null || value.isEmpty) {
@@ -259,28 +258,10 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                   ),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      // Build the job application data as a map
-                      final jobApplicationData = {
-                        'title': _jobTitleController.text,
-                        // 'companyId': _companyNameController.text,
-                        'location': _locationController.text,
-                        'jobType': _jobTypeController.text,
-                        'description': _jobDescriptionController.text,
-                        'qualifications': _qualificationControllers
-                            .map((controller) => controller.text)
-                            .toList(),
-                        'responsibilities': _responsibilitiesControllers
-                            .map((controller) => controller.text)
-                            .toList(),
-                        'datePosted': _postedDateController.text,
-                        'dateClosing': _closingDateController.text,
-                        // 'company_logo_url': _companyLogoURLController.text,
-                        'salaryRange': _salaryRangeController.text,
-                      };
-
                       _jobPostingService
                           .createJobPosting(
                               title: _jobTitleController.text,
+                              companyId: _user.id,
                               location: _locationController.text,
                               jobType: _jobTypeController.text,
                               description: _jobDescriptionController.text,
