@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:jobsearchmobile/models/job_info.dart';
 import 'package:jobsearchmobile/screens/home/widgets/job_detail.dart';
+import 'package:jobsearchmobile/screens/my_applications/pages/applicants_list.dart';
 
-class JobInfoItem extends StatelessWidget {
+class JobPostingItem extends StatelessWidget {
   final JobPosting jobPosting;
 
-  const JobInfoItem({Key? key, required this.jobPosting}) : super(key: key);
+  const JobPostingItem({Key? key, required this.jobPosting}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 280.0,
       padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
@@ -42,7 +42,6 @@ class JobInfoItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          width: 180,
                           child: Text(
                             jobPosting.title,
                             overflow: TextOverflow.ellipsis,
@@ -60,10 +59,6 @@ class JobInfoItem extends StatelessWidget {
                       ]),
                 ],
               ),
-              // IconButton(
-              //   onPressed: () => {},
-              //   icon: const Icon(Icons.bookmark_outline),
-              // )
             ],
           ),
           Row(
@@ -83,30 +78,55 @@ class JobInfoItem extends StatelessWidget {
                   )
                 ],
               ),
-              GestureDetector(
-                onTap: () {
-                  showModalBottomSheet<void>(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24.0),
+              Row(children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ApplicantsList(
+                                jobPosting: jobPosting,
+                              )),
+                    );
+                  },
+                  child: Chip(
+                    label: Text(
+                      'Applicants',
+                      style: TextStyle(
+                          fontSize: 12.0, color: Colors.grey.shade700),
                     ),
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (BuildContext context) => JobDetail(
-                      jobPosting: jobPosting,
-                      displayApplyButton: true,
-                    ),
-                  );
-                },
-                child: Chip(
-                  label: Text(
-                    'Details',
-                    style:
-                        TextStyle(fontSize: 12.0, color: Colors.grey.shade700),
+                    visualDensity: VisualDensity.compact,
+                    backgroundColor: Colors.grey.shade100,
                   ),
-                  visualDensity: VisualDensity.compact,
-                  backgroundColor: Colors.grey.shade100,
                 ),
-              )
+                const SizedBox(
+                  width: 8.0,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet<void>(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24.0),
+                      ),
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (BuildContext context) => JobDetail(
+                        jobPosting: jobPosting,
+                        displayApplyButton: false,
+                      ),
+                    );
+                  },
+                  child: Chip(
+                    label: Text(
+                      'Details',
+                      style: TextStyle(
+                          fontSize: 12.0, color: Colors.grey.shade700),
+                    ),
+                    visualDensity: VisualDensity.compact,
+                    backgroundColor: Colors.grey.shade100,
+                  ),
+                )
+              ])
             ],
           ),
           // Row(

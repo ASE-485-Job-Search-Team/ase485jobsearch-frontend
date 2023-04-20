@@ -70,93 +70,101 @@ class _MyApplicationsState extends State<MyApplications> {
     return Padding(
       padding: EdgeInsets.only(
           top: MediaQuery.of(context).padding.top + 16, left: 16, right: 16),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Overview',
-              style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
+      child: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Overview',
+                    style:
+                        TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
+                  ),
+                  // CreateAppButton(),
+                  FutureBuilder(
+                      future: fetchJobApplicationsForBuilder(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          final jobApplications =
+                              snapshot.data as List<JobApplication>;
+                          final jobApplicationsByStatus =
+                              countByStatus(jobApplications);
+                          return JobApplicationChart(
+                            applied: jobApplicationsByStatus[
+                                JobApplicationStatus.applied],
+                            underReview: jobApplicationsByStatus[
+                                JobApplicationStatus.underReview],
+                            offered: jobApplicationsByStatus[
+                                JobApplicationStatus.offered],
+                            rejected: jobApplicationsByStatus[
+                                JobApplicationStatus.rejected],
+                            unknown: jobApplicationsByStatus[
+                                JobApplicationStatus.unknown],
+                          );
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      }),
+                  const Text(
+                    'My Applications',
+                    style:
+                        TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(
+                    height: 16.0,
+                  ),
+                  FutureBuilder(
+                      future: fetchJobApplicationsForBuilder(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          final jobApplications =
+                              snapshot.data as List<JobApplication>;
+                          final jobApplicationsByDate =
+                              mapByDate(jobApplications);
+                          return Column(
+                            children: jobApplicationsByDate.entries
+                                .map((jobApplication) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    DateFormat.yMMMMd()
+                                        .format(jobApplication.key)
+                                        .toUpperCase(),
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey.shade500,
+                                    ),
+                                  ),
+                                  const Divider(),
+                                  Column(
+                                    children: jobApplication.value
+                                        .map((jobApplication) {
+                                      return MyApplicationCard(
+                                        jobApplication: jobApplication,
+                                      );
+                                    }).toList(),
+                                  ),
+                                ],
+                              );
+                            }).toList(),
+                          );
+                        } else {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                      }),
+                ],
+              ),
             ),
-            CreateAppButton(),
-            FutureBuilder(
-                future: fetchJobApplicationsForBuilder(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final jobApplications =
-                        snapshot.data as List<JobApplication>;
-                    final jobApplicationsByStatus =
-                        countByStatus(jobApplications);
-                    return JobApplicationChart(
-                      applied:
-                          jobApplicationsByStatus[JobApplicationStatus.applied],
-                      underReview: jobApplicationsByStatus[
-                          JobApplicationStatus.underReview],
-                      offered:
-                          jobApplicationsByStatus[JobApplicationStatus.offered],
-                      rejected: jobApplicationsByStatus[
-                          JobApplicationStatus.rejected],
-                      unknown:
-                          jobApplicationsByStatus[JobApplicationStatus.unknown],
-                    );
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                }),
-            const Text(
-              'My Applications',
-              style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(
-              height: 16.0,
-            ),
-            FutureBuilder(
-                future: fetchJobApplicationsForBuilder(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final jobApplications =
-                        snapshot.data as List<JobApplication>;
-                    final jobApplicationsByStatus =
-                        countByStatus(jobApplications);
-                    final jobApplicationsByDate = mapByDate(jobApplications);
-                    return Column(
-                      children:
-                          jobApplicationsByDate.entries.map((jobApplication) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              DateFormat.yMMMMd()
-                                  .format(jobApplication.key)
-                                  .toUpperCase(),
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.grey.shade500,
-                              ),
-                            ),
-                            const Divider(),
-                            Column(
-                              children:
-                                  jobApplication.value.map((jobApplication) {
-                                return MyApplicationCard(
-                                  jobApplication: jobApplication,
-                                );
-                              }).toList(),
-                            ),
-                          ],
-                        );
-                      }).toList(),
-                    );
-                  } else {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                }),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

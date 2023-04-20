@@ -8,8 +8,11 @@ import '../../../models/job_application.dart';
 
 class JobDetail extends StatefulWidget {
   final JobPosting jobPosting;
+  final bool displayApplyButton;
 
-  const JobDetail({Key? key, required this.jobPosting}) : super(key: key);
+  const JobDetail(
+      {Key? key, required this.jobPosting, required this.displayApplyButton})
+      : super(key: key);
 
   @override
   State<JobDetail> createState() => _JobDetailState();
@@ -150,45 +153,47 @@ class _JobDetailState extends State<JobDetail> {
           child: SizedBox(
             height: 60.0,
             child: Center(
-              child: SizedBox(
-                width: 200.0,
-                height: 42.0,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    const String userId = '6juMrrOUv3vHOjmlMczu';
-                    final String jobId = widget.jobPosting.id;
-                    jobApplicationService
-                        .applyForJob(userId, jobId)
-                        .then((_) => {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Application Submitted!'),
-                                  backgroundColor: Colors.green,
-                                ),
-                              ),
-                              Navigator.pop(context)
-                            })
-                        .catchError((error) => {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(error.message),
-                                  backgroundColor: Colors.red,
-                                ),
-                              ),
-                              Navigator.pop(context)
-                            });
-                  },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF2c3a6d),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50.0))),
-                  child: const Text(
-                    'Apply',
-                    style:
-                        TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0),
-                  ),
-                ),
-              ),
+              child: widget.displayApplyButton
+                  ? SizedBox(
+                      width: 200.0,
+                      height: 42.0,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          const String userId = '6juMrrOUv3vHOjmlMczu';
+                          final String jobId = widget.jobPosting.id;
+                          jobApplicationService
+                              .applyForJob(userId, jobId)
+                              .then((_) => {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Application Submitted!'),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    ),
+                                    Navigator.pop(context)
+                                  })
+                              .catchError((error) => {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(error.message),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    ),
+                                    Navigator.pop(context)
+                                  });
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF2c3a6d),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50.0))),
+                        child: const Text(
+                          'Apply',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 16.0),
+                        ),
+                      ),
+                    )
+                  : Container(),
             ),
           ))
     ]);

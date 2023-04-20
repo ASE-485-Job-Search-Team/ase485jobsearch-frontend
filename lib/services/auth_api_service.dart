@@ -10,6 +10,7 @@ import 'package:jobsearchmobile/models/auth/register_response.dart';
 import 'package:jobsearchmobile/services/auth_shared_service.dart';
 
 import '../constants/api.dart';
+import '../models/user.dart';
 
 class APIService {
   static var client = http.Client();
@@ -38,8 +39,8 @@ class APIService {
   }
 
   static Future<RegisterResponseModel> register(
-      RegisterRequestModel model,
-      ) async {
+    RegisterRequestModel model,
+  ) async {
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
     };
@@ -59,8 +60,8 @@ class APIService {
   }
 
   static Future<RegisterResponseCompanyModel> registerCompany(
-      RegisterRequestCompanyModel model,
-      ) async {
+    RegisterRequestCompanyModel model,
+  ) async {
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
     };
@@ -99,5 +100,32 @@ class APIService {
     } else {
       return "";
     }
+  }
+
+  static Future<User> loadUserData() async {
+    late User user;
+    String response = await APIService.getUserProfile();
+
+    final model = jsonDecode(response);
+    final isAdmin = model['data']['isAdmin'];
+
+    if (isAdmin) {
+      user = User(
+        id: model['data']['id'],
+        name: model['data']['company'],
+        email: model['data']['email'],
+        isAdmin: true,
+      );
+    } else {
+      user = User(
+        id: model['data']['id'],
+        name: model['data']['first'] + ' ' + model['data']['last'],
+        email: model['data']['email'],
+        resume: model['data']['resume'],
+        isAdmin: false,
+      );
+    }
+
+    return user;
   }
 }

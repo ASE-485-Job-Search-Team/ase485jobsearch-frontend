@@ -59,17 +59,19 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
     final model = jsonDecode(response);
     final isAdmin = model['data']['isAdmin'];
 
-    if(isAdmin){
+    if (isAdmin) {
       user = User(
         id: model['data']['id'],
         name: model['data']['company'],
         email: model['data']['email'],
+        isAdmin: true,
       );
     } else {
       user = User(
         id: model['data']['id'],
         name: model['data']['first'] + ' ' + model['data']['last'],
         email: model['data']['email'],
+        isAdmin: false,
       );
     }
 
@@ -273,53 +275,7 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                               dateClosing: _closingDateController.text,
                               salaryRange: _salaryRangeController.text)
                           .then((value) => {})
-                          .catchError((error) => {}); // Error handling hereb
-                      /*if (response.statusCode == 200) {
-                        // Job application submitted successfully
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Job application submitted successfully!'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                        Navigator.pop(context);
-                      } else {
-                        // API returned an error
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Failed to submit job application. Please try again.'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
-                    } catch (e) {
-                      // Error sending the API request
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('An error occurred while sending the request. Please try again.'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                       */
-                      // try {
-                      //   // Send the job application data as a JSON object to the API
-                      //   final response = await http.post(
-                      //     Uri.parse('https://example.com/api/job_applications'),
-                      //     headers: {'Content-Type': 'application/json'},
-                      //     body: jsonEncode(jobApplicationData),
-                      //   );
-                      //
-                      //   if (response.statusCode == 200) {
-                      //     // Job application submitted successfully
-                      //     // ...
-                      //   } else {
-                      //     // API returned an error
-                      //     // ...
-                      //   }
-                      // } catch (e) {
-                      //   // Error sending the API request
-                      //   // ...
-                      // }
+                          .catchError((error) => {}); // Error handling here
                     }
                   },
                   child: Text('Submit'),
