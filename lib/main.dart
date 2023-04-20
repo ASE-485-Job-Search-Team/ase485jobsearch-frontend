@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jobsearchmobile/screens/auth/login.dart';
+import 'package:jobsearchmobile/screens/auth/resume_upload.dart';
 import 'package:jobsearchmobile/screens/auth/sign_up.dart';
 import 'package:jobsearchmobile/screens/auth/sign_up_company.dart';
 import 'package:jobsearchmobile/screens/auth/sign_up_select_type.dart';
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
         '/signupcompany': (context) => const SignUpCompanyPage(),
         '/select': (context) => const SelectTypePage(),
         // '/user': (context) => UserDashboardPage(),
-        // '/resume': (context) => ResumeUploadPage(),
+        '/resume': (context) => ResumeUploadPage(),
         // '/company': (context) => DashboardPage(),
         // '/jobapp': (context) => JobApplicationPage(),
       },
