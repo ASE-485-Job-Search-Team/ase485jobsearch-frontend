@@ -33,35 +33,35 @@ class JobPostingService {
         required String datePosted,
         required String dateClosing,
         required String salaryRange}) async {
-    var url = Uri.parse('${Api.jobPostingsUrl}/create');
+        var url = Uri.parse('${Api.jobPostingsUrl}/create');
 
-    Map<String, String> headers = {
-      'Content-type': 'application/json',
-      'Accept': 'application/json',
-    };
+        Map<String, String> headers = {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+        };
 
-    // Create a JobPosting object
-    JobPosting jobPosting = JobPosting(
-      id: '', // You may need to assign an id before sending to the API
-      title: title,
-      companyId: companyId, // Replace with companyId
-      company: '', // Replace with company name
-      location: location,
-      jobType: jobType,
-      description: description,
-      qualifications: qualifications,
-      responsibilities: responsibilities,
-      datePosted: DateTime.parse(datePosted),
-      dateClosing: DateTime.parse(dateClosing),
-      companyLogo: '', // Replace with companyLogo URL
-      salaryRange: salaryRange,
-    );
+        // Create a JobPosting object
+        JobPosting jobPosting = JobPosting(
+          id: '', // You may need to assign an id before sending to the API
+          title: title,
+          companyId: companyId, // Replace with companyId
+          company: '', // Replace with company name
+          location: location,
+          jobType: jobType,
+          description: description,
+          qualifications: qualifications,
+          responsibilities: responsibilities,
+          datePosted: DateTime.parse(datePosted),
+          dateClosing: DateTime.parse(dateClosing),
+          companyLogo: '', // Replace with companyLogo URL
+          salaryRange: salaryRange,
+        );
 
-    // Use the JobPosting object's toJson method to generate the request body
-    final response = await http.post(url,
-        headers: headers, body: jsonEncode(jobPosting.toJson()));
+        // Use the JobPosting object's toJson method to generate the request body
+        final response = await http.post(url,
+            headers: headers, body: jsonEncode(jobPosting.toJson()));
 
-    return response;
+        return response;
   }
 }
 
