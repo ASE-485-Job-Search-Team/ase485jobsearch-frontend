@@ -2,10 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:jobsearchmobile/models/user.dart';
-import 'package:jobsearchmobile/screens/home/widgets/app_bar.dart';
-import 'package:jobsearchmobile/screens/home/widgets/custom_app_bar.dart';
 import 'package:jobsearchmobile/screens/profile/widgets/resume_reader.dart';
-import 'package:jobsearchmobile/services/user_service.dart';
 import 'package:jobsearchmobile/services/auth_api_service.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -217,7 +214,6 @@ class _ProfilePageState extends State<ProfilePage> {
           }
         },
       ),
-    */
     );
   }
 }
