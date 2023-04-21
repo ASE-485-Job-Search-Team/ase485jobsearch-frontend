@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:snippet_coder_utils/hex_color.dart';
 import '../../models/user.dart';
 import '../../services/auth_api_service.dart';
 import 'widgets/resume_upload_button.dart';
@@ -13,20 +14,20 @@ class ResumeUploadPage extends StatefulWidget {
 }
 
 class _ResumeUploadPage extends State<ResumeUploadPage> {
-  late User _user;
+  late Future<User> _userFuture;
 
   @override
   void initState() {
     super.initState();
-    _loadUserData();
+    _userFuture = _loadUserData();
   }
 
-  void _loadUserData() async {
-    late User user;
+  Future<User> _loadUserData() async {
     String response = await APIService.getUserProfile();
 
     final model = jsonDecode(response);
     final isAdmin = model['data']['isAdmin'];
+    User user;
 
     if (isAdmin) {
       user = User(
@@ -45,9 +46,7 @@ class _ResumeUploadPage extends State<ResumeUploadPage> {
       );
     }
 
-    setState(() {
-      _user = user;
-    });
+    return user;
   }
 
   @override
@@ -55,20 +54,33 @@ class _ResumeUploadPage extends State<ResumeUploadPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Upload Resume'),
+        backgroundColor: HexColor("#283B71"),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Welcome! Please upload your resume.',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            ResumeUploadButton(
-              userID: _user.id,
-            ),
-          ],
+        child: FutureBuilder<User>(
+          future: _userFuture,
+          builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              final user = snapshot.data;
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Please upload your resume',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 20),
+                  ResumeUploadButton(
+                    userID: user!.id,
+                  ),
+                ],
+              );
+            }
+          },
         ),
       ),
     );

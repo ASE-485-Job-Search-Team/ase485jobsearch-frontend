@@ -8,6 +8,10 @@ import 'package:jobsearchmobile/models/auth/register_company_request.dart';
 import 'package:jobsearchmobile/models/auth/register_company_response.dart';
 import 'package:jobsearchmobile/models/auth/register_request.dart';
 import 'package:jobsearchmobile/models/auth/register_response.dart';
+import 'package:jobsearchmobile/models/auth/update_resume_fb_request.dart';
+import 'package:jobsearchmobile/models/auth/update_resume_fb_response.dart';
+import 'package:jobsearchmobile/models/auth/update_resume_md_request.dart';
+import 'package:jobsearchmobile/models/auth/update_resume_md_response.dart';
 import 'package:jobsearchmobile/services/auth_shared_service.dart';
 
 import '../constants/api.dart';
@@ -152,4 +156,50 @@ class APIService {
 
     return createUserResponseJSON(response.body);
   }
+
+
+  static Future<UpdateResumeFBResponseModel> updateResumeFB(UpdateResumeFBRequestModel model,) async {
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+    };
+
+    const String baseUrl = 'localhost:5050';
+    const String createAPI = "/api/users/update/resume-id";
+
+    var url = Uri.http(
+      baseUrl,
+      createAPI,
+    );
+
+    var response = await client.put(
+      url,
+      headers: requestHeaders,
+      body: jsonEncode(model.toJson()),
+    );
+
+    return updateResumeFBResponseJSON(response.body);
+  }
+
+  static Future<UpdateResumeMDResponseModel> updateResumeMD(UpdateResumeMDRequestModel model,) async {
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+    };
+
+    const String baseUrl = 'localhost:3000';
+    const String createAPI = "/api/update/user/resume";
+
+    var url = Uri.http(
+      baseUrl,
+      createAPI,
+    );
+
+    var response = await client.post(
+      url,
+      headers: requestHeaders,
+      body: jsonEncode(model.toJson()),
+    );
+
+    return updateResumeMDResponseJSON(response.body);
+  }
+
 }
