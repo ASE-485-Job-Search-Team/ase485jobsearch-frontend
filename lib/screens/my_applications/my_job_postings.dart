@@ -84,7 +84,7 @@ class _MyJobPostingsState extends State<MyJobPostings> {
                             children:
                                 jobPostingsByDate.entries.map((jobPosting) {
                               return Padding(
-                                padding: EdgeInsets.only(bottom: 16.0),
+                                padding: const EdgeInsets.only(bottom: 16.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -103,8 +103,12 @@ class _MyJobPostingsState extends State<MyJobPostings> {
                                     Column(
                                       children:
                                           jobPosting.value.map((jobPosting) {
-                                        return JobPostingItem(
-                                          jobPosting: jobPosting,
+                                        return Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 16.0),
+                                          child: JobPostingItem(
+                                            jobPosting: jobPosting,
+                                          ),
                                         );
                                       }).toList(),
                                     ),
