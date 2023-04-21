@@ -48,7 +48,7 @@ class _ResumeUploadButtonState extends State<ResumeUploadButton> {
                           onPressed: () {
                             // Close the dialog and navigate to the login page
                             Navigator.of(context).popUntil((route) => route.isFirst);
-                            Navigator.pushNamed(context, '/login');
+                            Navigator.pushNamed(context, '/home');
                           },
                           child: Text('OK'),
                         ),

@@ -13,6 +13,7 @@ class JobPostingService {
     final response =
     await client.get(Uri.parse('${Api.jobPostingsUrl}?$query'));
     if (response.statusCode == 200) {
+      print(response.statusCode);
       final jobPostings = jsonDecode(response.body) as List;
       return jobPostings
           .map((jobPosting) => JobPosting.fromJson(jobPosting))

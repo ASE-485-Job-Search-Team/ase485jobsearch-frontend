@@ -70,6 +70,10 @@ class _MyJobPostingsState extends State<MyJobPostings> {
                   const SizedBox(
                     height: 16.0,
                   ),
+                  const CreateAppButton(),
+                  const SizedBox(
+                    height: 16.0,
+                  ),
                   FutureBuilder(
                       future: fetchJobPostingForBuilder(),
                       builder: (context, snapshot) {

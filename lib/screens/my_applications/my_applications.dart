@@ -10,6 +10,8 @@ import 'package:jobsearchmobile/screens/my_applications/widgets/create_app_butto
 import 'package:http/http.dart' as http;
 import 'package:jobsearchmobile/screens/auth/widgets/resume_upload_button.dart';
 import '../../constants/api.dart';
+import '../../models/user.dart';
+import '../../services/auth_api_service.dart';
 
 class MyApplications extends StatefulWidget {
   const MyApplications({Key? key}) : super(key: key);
@@ -19,6 +21,44 @@ class MyApplications extends StatefulWidget {
 }
 
 class _MyApplicationsState extends State<MyApplications> {
+
+  late User _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  void _loadUserData() async {
+    late User user;
+    String response = await APIService.getUserProfile();
+
+    final model = jsonDecode(response);
+    final isAdmin = model['data']['isAdmin'];
+
+    if (isAdmin) {
+      user = User(
+        id: model['data']['id'],
+        name: model['data']['company'],
+        email: model['data']['email'],
+        isAdmin: true,
+      );
+    } else {
+      user = User(
+        id: model['data']['id'],
+        name: model['data']['first'] + ' ' + model['data']['last'],
+        email: model['data']['email'],
+        resume: model['data']['resume'],
+        isAdmin: false,
+      );
+    }
+
+    setState(() {
+      _user = user;
+    });
+  }
+
   Future<List<JobApplication>> fetchJobApplicationsForBuilder(
       {String query = ''}) async {
     final response = await http.get(Uri.parse(
