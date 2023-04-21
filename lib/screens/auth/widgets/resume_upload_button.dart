@@ -60,7 +60,7 @@ class _ResumeUploadButtonState extends State<ResumeUploadButton> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text('Resume Uploaded'),
+                              title: Text('Registration Complete'),
                               content: Text('Your resume has been uploaded successfully.'),
                               actions: [
                                 TextButton(
@@ -100,11 +100,11 @@ class _ResumeUploadButtonState extends State<ResumeUploadButton> {
                   }
                 });
               },
-              child: Text('Upload Resume (PDF)'),
+              child: Text('Upload File'),
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Color(0xFF2c3a6d)),
                 padding: MaterialStateProperty.all(
-                    EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0)),
+                    EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0)),
               ),
             ),
           ],

@@ -171,7 +171,7 @@ class APIService {
       createAPI,
     );
 
-    var response = await client.post(
+    var response = await client.put(
       url,
       headers: requestHeaders,
       body: jsonEncode(model.toJson()),

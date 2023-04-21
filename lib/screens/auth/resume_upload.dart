@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:snippet_coder_utils/hex_color.dart';
 import '../../models/user.dart';
 import '../../services/auth_api_service.dart';
 import 'widgets/resume_upload_button.dart';
@@ -53,6 +54,7 @@ class _ResumeUploadPage extends State<ResumeUploadPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Upload Resume'),
+        backgroundColor: HexColor("#283B71"),
       ),
       body: Center(
         child: FutureBuilder<User>(
@@ -68,7 +70,7 @@ class _ResumeUploadPage extends State<ResumeUploadPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Welcome! Please upload your resume.',
+                    'Please upload your resume',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 20),
