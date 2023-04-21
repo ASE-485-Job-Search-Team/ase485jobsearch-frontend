@@ -5,17 +5,17 @@ UpdateResumeFBResponseModel updateResumeFBResponseJSON(String str) =>
 
 class UpdateResumeFBResponseModel {
   UpdateResumeFBResponseModel({
-    required this.post
+    required this.put
   });
-  late final String post;
+  late final String put;
 
   UpdateResumeFBResponseModel.fromJson(Map<String, dynamic> json){
-    post = json['post'];
+    put = json['put'];
   }
 
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
-    _data['post'] = post;
+    _data['put'] = put;
     return _data;
   }
 }
