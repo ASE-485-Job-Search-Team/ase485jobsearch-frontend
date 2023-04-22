@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:jobsearchmobile/models/auth/create_company_request.dart';
 import 'package:jobsearchmobile/models/auth/register_company_request.dart';
 import 'package:jobsearchmobile/services/auth_api_service.dart';
 
@@ -221,19 +222,38 @@ class _SignUpCompanyPageState extends State<SignUpCompanyPage> {
                       });
 
                       if (response.data != null) {
-                        FormHelper.showSimpleAlertDialog(
-                          context,
-                          Api.appName,
-                          "Registration Successful. Please login to the account",
-                          "OK",
-                              () {
-                            Navigator.pushNamedAndRemoveUntil(
+                        CreateCompanyRequestModel model2 = CreateCompanyRequestModel(
+                            companyId: response.data!.id,
+                            companyName: company);
+
+                        APIService.createCompanyForFb(model2).then((response2) {
+                          if(response2.post == "success") {
+                            FormHelper.showSimpleAlertDialog(
                               context,
-                              '/login',
-                                  (route) => false,
+                              Api.appName,
+                              "Registration Successful. Please login to the account",
+                              "OK",
+                                  () {
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  '/login',
+                                      (route) => false,
+                                );
+                              },
                             );
-                          },
-                        );
+                          } else {
+                            FormHelper.showSimpleAlertDialog(
+                              context,
+                              Api.appName,
+                              "Failed to create company to firebase",
+                              "OK",
+                                  () {
+                                Navigator.of(context).pop();
+                              },
+                            );
+                          }
+                        });
+
                       } else {
                         FormHelper.showSimpleAlertDialog(
                           context,
