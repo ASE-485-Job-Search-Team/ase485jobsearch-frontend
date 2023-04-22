@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:jobsearchmobile/services/job_application_service.dart';
 import '../../../models/job_info.dart';
 import '../../../models/job_application.dart';
+import '../../../models/user.dart';
+import '../../../services/auth_api_service.dart';
 
 class JobDetail extends StatefulWidget {
   final JobPosting jobPosting;
@@ -21,6 +23,43 @@ class JobDetail extends StatefulWidget {
 class _JobDetailState extends State<JobDetail> {
   final jobApplicationService =
       JobApplicationService(httpClient: http.Client());
+
+  late User _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  void _loadUserData() async {
+    String response = await APIService.getUserProfile();
+
+    final model = jsonDecode(response);
+    final isAdmin = model['data']['isAdmin'];
+    User user;
+
+    if (isAdmin) {
+      user = User(
+        id: model['data']['id'],
+        name: model['data']['company'],
+        email: model['data']['email'],
+        isAdmin: true,
+      );
+    } else {
+      user = User(
+        id: model['data']['id'],
+        name: model['data']['first'] + ' ' + model['data']['last'],
+        email: model['data']['email'],
+        resume: model['data']['resume'],
+        isAdmin: false,
+      );
+    }
+
+    setState(() {
+      _user = user;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +198,7 @@ class _JobDetailState extends State<JobDetail> {
                       height: 42.0,
                       child: ElevatedButton(
                         onPressed: () async {
-                          const String userId = '6juMrrOUv3vHOjmlMczu';
+                          final String userId = _user!.id;
                           final String jobId = widget.jobPosting.id;
                           jobApplicationService
                               .applyForJob(userId, jobId)
@@ -183,7 +222,7 @@ class _JobDetailState extends State<JobDetail> {
                                   });
                         },
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF2c3a6d),
+                            backgroundColor: const Color(0xFF2c3a6d),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50.0))),
                         child: const Text(
