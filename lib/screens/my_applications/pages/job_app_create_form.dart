@@ -15,7 +15,6 @@ class JobApplicationPage extends StatefulWidget {
 }
 
 class _JobApplicationPageState extends State<JobApplicationPage> {
-  late User _user;
   final JobPostingService _jobPostingService =
       JobPostingService(httpClient: http.Client());
   final _formKey = GlobalKey<FormState>();
@@ -34,6 +33,8 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
 
   List<TextEditingController> _qualificationControllers = [];
   List<TextEditingController> _responsibilitiesControllers = [];
+
+  late User _user;
 
   String? _validateNotEmpty(String? value) {
     if (value == null || value.isEmpty) {

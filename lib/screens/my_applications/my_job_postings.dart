@@ -12,6 +12,8 @@ import 'package:jobsearchmobile/screens/my_applications/widgets/create_app_butto
 import 'package:http/http.dart' as http;
 import 'package:jobsearchmobile/screens/auth/widgets/resume_upload_button.dart';
 import '../../constants/api.dart';
+import '../../models/user.dart';
+import '../../services/auth_api_service.dart';
 import '../home/widgets/job_info_item.dart';
 
 class MyJobPostings extends StatefulWidget {
@@ -22,10 +24,34 @@ class MyJobPostings extends StatefulWidget {
 }
 
 class _MyJobPostingsState extends State<MyJobPostings> {
+  late User _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  void _loadUserData() async {
+    String response = await APIService.getUserProfile();
+    final model = jsonDecode(response);
+
+    late User user = User(
+      id: model['data']['id'],
+      name: model['data']['company'],
+      email: model['data']['email'],
+      isAdmin: true,
+    );
+
+    setState(() {
+      _user = user;
+    });
+  }
+
   Future<List<JobPosting>> fetchJobPostingForBuilder(
       {String query = ''}) async {
     final response = await http.get(Uri.parse(
-        '${Api.baseUrl}/companies/nR3nWouQJIR3fgyIggHP/jobs?$query')); //TODO: Replace with real id
+        '${Api.baseUrl}/companies/${_user.id}/jobs?$query')); //TODO: Replace with real id
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
       return jsonData
