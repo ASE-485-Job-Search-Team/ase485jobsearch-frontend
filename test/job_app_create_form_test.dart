@@ -1,60 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
 import 'package:jobsearchmobile/screens/my_applications/pages/job_app_create_form.dart';
-import 'package:integration_test/integration_test.dart';
-import 'package:jobsearchmobile/main.dart' as app;
+import 'package:jobsearchmobile/services/job_posting_service.dart';
 
-void main() {
-  group('Job Application Page Unit Tests', () {
-    // Add unit tests for non-UI functions and utility methods here
-    // ...
-  });
+class CustomMockClient extends http.BaseClient {
+      http.Request? sentRequest;
 
-  group('Job Application Page Widget Tests', () {
-    testWidgets('Job Application Page has required form fields', (
-        WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(home: JobApplicationPage()));
-
-      // Add widget tests for UI components and interactions here
-      // ...
-    });
-  });
-
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
-  group('Job Application Page Integration Tests', () {
-    testWidgets('Submit job application form', (WidgetTester tester) async {
-      app.main();
-      await tester.pumpAndSettle();
-
-      // Navigate to the JobApplicationPage and perform the integration tests
-      // Add integration tests for the whole workflow of submitting a job application
-      // ...
-    });
-  });
-
-  group('Job Application Page Acceptance Tests', () {
-    testWidgets('Verify job application form is submitted successfully', (WidgetTester tester) async {
-      app.main();
-      await tester.pumpAndSettle();
-
-      // Navigate to the JobApplicationPage and perform the acceptance tests
-      // Add acceptance tests to verify the user journey and expected outcomes
-      // ...
-    });
-  });
-
-  group('Job Application Page Regression Tests', () {
-    testWidgets('Verify job application form functionality after changes', (WidgetTester tester) async {
-      app.main();
-      await tester.pumpAndSettle();
-
-      // Navigate to the JobApplicationPage and perform the regression tests
-      // Add regression tests to ensure that the form functionality works as expected after changes
-      // ...
-    });
-  });
+      @override
+      Future<http.StreamedResponse> send(http.BaseRequest request) {
+            sentRequest = request as http.Request?;
+            return Future.error(Exception('Test client, not sending actual request.'));
+      }
 }
 
+void main() {
+      testWidgets('JobApplicationPage submits form and sends a request to create a new job posting',
+              (WidgetTester tester) async {
+                // Prepare the custom mock API service
+                final customMockClient = CustomMockClient();
+                final jobPostingService = JobPostingService(httpClient: customMockClient);
 
+                // Build the MaterialApp with JobApplicationPage as the home widget
+                final app = MaterialApp(
+                      home: JobApplicationPage(),
+                );
 
+                await tester.pumpWidget(app);
+
+                // Fill in the form fields
+                await tester.enterText(find.byType(TextFormField).at(0), 'Job Title');
+                await tester.enterText(find.byType(TextFormField).at(1), 'Location');
+                await tester.enterText(find.byType(TextFormField).at(2), 'Job Type');
+                await tester.enterText(find.byType(TextFormField).at(3), 'Job Description');
+                await tester.enterText(find.byType(TextFormField).at(4), 'Qualification');
+                await tester.enterText(find.byType(TextFormField).at(5), 'Responsibility');
+                await tester.enterText(find.byType(TextFormField).at(6), '2023-04-30');
+                await tester.enterText(find.byType(TextFormField).at(7), '50000-70000');
+
+                // Tap the submit button
+                await tester.tap(find.text('Submit'));
+                await tester.pumpAndSettle();
+
+                // Verify that a POST request was sent to the API
+                expect(customMockClient.sentRequest, isNotNull);
+                expect(customMockClient.sentRequest!.method, 'POST');
+                expect(customMockClient.sentRequest!.url.path, '/job_postings/create');
+          });
+}

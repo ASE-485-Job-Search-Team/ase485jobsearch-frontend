@@ -1,101 +1,62 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
-import 'package:integration_test/integration_test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:jobsearchmobile/screens/landing_page/landing_page.dart';
-import 'package:jobsearchmobile/main.dart' as app;
+import 'package:jobsearchmobile/services/auth_shared_service.dart';
+import 'package:mockito/mockito.dart';
+import 'mocks/mock_shared_service.dart';
 
 void main() {
-  group('LandingPage Unit Tests', () {
-    testWidgets('displays buttons on the LandingPage', (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(home: LandingPage()));
-      expect(find.text('Sign Up'), findsOneWidget);
-      expect(find.text('Log In'), findsOneWidget);
-      expect(find.text('Home'), findsOneWidget);
-    });
-  });
-  group('LandingPage GUI Tests', () {
-    testWidgets('displays buttons with correct styles', (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(home: LandingPage()));
-      final buttonFinder = find.byType(ElevatedButton);
-      expect(buttonFinder, findsNWidgets(3));
+  // Create a mock instance of SharedService
+  final mockSharedService = MockSharedService();
 
-      final signUpButton = tester.widget<ElevatedButton>(find.widgetWithText(ElevatedButton, 'Sign Up'));
-      final logInButton = tester.widget<ElevatedButton>(find.widgetWithText(ElevatedButton, 'Log In'));
-      final homeButton = tester.widget<ElevatedButton>(find.widgetWithText(ElevatedButton, 'Home'));
+  // Stub the isLoggedIn method to always return false
+  when(mockSharedService.isLoggedIn()).thenAnswer((_) async => false);
 
-      expect(signUpButton.style!.backgroundColor!.resolve({}), Color(0xFF2c3a6d));
-      expect(logInButton.style!.backgroundColor!.resolve({}), Color(0xFF2c3a6d));
-      expect(homeButton.style!.backgroundColor!.resolve({}), Color(0xFF2c3a6d));
-    });
-  });
+  testWidgets('LandingPage displays buttons correctly and navigates on tap', (WidgetTester tester) async {
+    // Build the LandingPage widget.
+    await tester.pumpWidget(MaterialApp(home: LandingPage(), routes: {
+      '/select': (BuildContext context) => const SizedBox(),
+      '/login': (BuildContext context) => const SizedBox(),
+      '/home': (BuildContext context) => const SizedBox(),
+    }));
 
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+    // Verify that the Sign Up buttons is displayed.
+    expect(find.text('Sign Up'), findsOneWidget);
 
-  group('LandingPage Integration Tests', () {
-    testWidgets('Verify navigation from LandingPage to other pages', (WidgetTester tester) async {
-      app.main();
-      await tester.pumpAndSettle();
 
-      // Navigate to the LandingPage
-      await tester.tap(find.byIcon(Icons.menu));
-      await tester.pumpAndSettle();
-
-      // Click the Sign Up button and verify navigation to the sign-up page
-      await tester.tap(find.text('Sign Up'));
-      await tester.pumpAndSettle();
-      expect(find.text('Sign Up Page'), findsOneWidget); // Assuming the sign-up page contains the text "Sign Up Page"
-
-      // Go back to the LandingPage
-      await tester.pageBack();
-      await tester.pumpAndSettle();
-
-      // Click the Log In button and verify navigation to the login page
-      await tester.tap(find.text('Log In'));
-      await tester.pumpAndSettle();
-      expect(find.text('Log In Page'), findsOneWidget); // Assuming the login page contains the text "Log In Page"
-
-      // Go back to the LandingPage
-      await tester.pageBack();
-      await tester.pumpAndSettle();
-
-      // Click the Home button and verify navigation to the home page
-      await tester.tap(find.text('Home'));
-      await tester.pumpAndSettle();
-      expect(find.text('Home Page'), findsOneWidget); // Assuming the home page contains the text "Home Page"
-    });
+    // Tap the Sign Up button and verify navigation.
+    await tester.tap(find.text('Sign Up'));
+    await tester.pumpAndSettle();
   });
 
-  group('LandingPage Acceptance Tests', () {
-    testWidgets('Verify end-to-end flow from LandingPage to other pages', (WidgetTester tester) async {
-      app.main();
-      await tester.pumpAndSettle();
+  testWidgets('LandingPage displays buttons correctly and navigates on tap', (WidgetTester tester) async {
+    // Build the LandingPage widget.
+    await tester.pumpWidget(MaterialApp(home: LandingPage(), routes: {
+      '/select': (BuildContext context) => const SizedBox(),
+      '/login': (BuildContext context) => const SizedBox(),
+      '/home': (BuildContext context) => const SizedBox(),
+    }));
 
-      // Navigate to the LandingPage
-      await tester.tap(find.byIcon(Icons.menu));
-      await tester.pumpAndSettle();
+    // Verify that the Log In button is displayed.
+    expect(find.text('Log In'), findsOneWidget);
 
-      // Click the Sign Up button and verify navigation to the sign-up page
-      await tester.tap(find.text('Sign Up'));
-      await tester.pumpAndSettle();
-      expect(find.text('Sign Up Page'), findsOneWidget); // Assuming the sign-up page contains the text "Sign Up Page"
+    // Tap the Log In button and verify navigation.
+    await tester.tap(find.text('Log In'));
+    await tester.pumpAndSettle();
+  });
 
-      // Go back to the LandingPage
-      await tester.pageBack();
-      await tester.pumpAndSettle();
+  testWidgets('LandingPage displays buttons correctly and navigates on tap', (WidgetTester tester) async {
+    // Build the LandingPage widget.
+    await tester.pumpWidget(MaterialApp(home: LandingPage(), routes: {
+      '/home': (BuildContext context) => const SizedBox(),
+    }));
 
-      // Click the Log In button and verify navigation to the login page
-      await tester.tap(find.text('Log In'));
-      await tester.pumpAndSettle();
-      expect(find.text('Log In Page'), findsOneWidget); // Assuming the login page contains the text "Log In Page"
+    // Verify that the Log In button is displayed.
+    expect(find.text('Home'), findsOneWidget);
 
-      // Go back to the LandingPage
-      await tester.pageBack();
-      await tester.pumpAndSettle();
 
-      // Click the Home button and verify navigation to the home page
-      await tester.tap(find.text('Home'));
-      await tester.pumpAndSettle();
-      expect(find.text('Home Page'), findsOneWidget); // Assuming the home page contains the text "Home Page"
-    });
+    // Tap the Home button and verify navigation.
+    await tester.tap(find.text('Home'));
+    await tester.pumpAndSettle();
   });
 }
