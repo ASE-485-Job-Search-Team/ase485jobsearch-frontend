@@ -1,71 +1,64 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:jobsearchmobile/main.dart' as app;
 import 'package:flutter/material.dart';
-import 'package:integration_test/integration_test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:jobsearchmobile/screens/auth/login.dart';
+import 'package:jobsearchmobile/screens/main_layout.dart';
+import 'package:jobsearchmobile/services/auth_api_service.dart';
+import 'package:snippet_coder_utils/hex_color.dart';
+
 
 void main() {
-  group('LoginPage Unit Tests', () {
-    testWidgets('displays form elements on the LoginPage', (WidgetTester tester) async {
+  group('LoginPage', () {
+    testWidgets('renders', (WidgetTester tester) async {
+      // Build LoginPage widget
       await tester.pumpWidget(MaterialApp(home: LoginPage()));
+
+      // Expect to find Login text
       expect(find.text('Login'), findsOneWidget);
-      expect(find.text('Email'), findsOneWidget);
-      expect(find.text('Password'), findsOneWidget);
-      expect(find.text('Login'), findsOneWidget);
-      expect(find.byType(TextFormField), findsNWidgets(2));
     });
 
-    // Add additional unit tests for the widget's behavior
-  });
+    testWidgets('form can be submitted with valid credentials',
+            (WidgetTester tester) async {
+          // Mock APIService.login method to return true
+          APIService.login = (model) async => true;
 
-  group('LoginPage GUI Tests', () {
-    testWidgets('displays form elements with correct styles', (WidgetTester tester) async {
-      await tester.pumpWidget(MaterialApp(home: LoginPage()));
-      // Add GUI tests for the widget's appearance
-    });
-  });
+          // Build LoginPage widget
+          await tester.pumpWidget(MaterialApp(home: LoginPage()));
 
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+          // Fill in email and password fields
+          await tester.enterText(
+              find.widgetWithText(TextFormField, 'Email'), 'test@test.com');
+          await tester.enterText(
+              find.widgetWithText(TextFormField, 'Password'), 'password');
 
-  group('LoginPage Integration Tests', () {
-    testWidgets('Verify form validation and submission', (WidgetTester tester) async {
-      app.main();
-      await tester.pumpAndSettle();
+          // Tap submit button
+          await tester.tap(find.widgetWithText(ElevatedButton, 'Login'));
+          await tester.pump();
 
-      // Navigate to the LoginPage
-      await tester.tap(find.text('Log In'));
-      await tester.pumpAndSettle();
+          // Expect to navigate to '/home' route
+          expect(find.byType(LoginPage), findsNothing);
+          expect(find.byType(MainAppLayout), findsOneWidget);
+        });
 
-      // Test form validation and submission
-      // You can use the tester.enterText() and tester.tap() methods to interact with the form fields and buttons
-      await tester.enterText(find.widgetWithText(TextFormField, 'Email'), 'test@example.com');
-      await tester.enterText(find.widgetWithText(TextFormField, 'Password'), 'password');
-      await tester.tap(find.widgetWithText(ElevatedButton, 'Login'));
-      await tester.pumpAndSettle();
+    testWidgets('form cannot be submitted with invalid credentials',
+            (WidgetTester tester) async {
+          // Mock APIService.login method to return false
+          APIService.login = (model) async => false;
 
-      // Verify navigation to the company page upon successful submission
-      expect(find.text('Company Page'), findsOneWidget); // Assuming the company page contains the text "Company Page"
-    });
-  });
+          // Build LoginPage widget
+          await tester.pumpWidget(MaterialApp(home: LoginPage()));
 
-  group('LoginPage Acceptance Tests', () {
-    testWidgets('Verify end-to-end flow for logging in', (WidgetTester tester) async {
-      app.main();
-      await tester.pumpAndSettle();
+          // Fill in email and password fields with invalid values
+          await tester.enterText(
+              find.widgetWithText(TextFormField, 'Email'), 'invalid-email');
+          await tester.enterText(
+              find.widgetWithText(TextFormField, 'Password'), 'short');
 
-      // Navigate to the LoginPage
-      await tester.tap(find.text('Log In'));
-      await tester.pumpAndSettle();
+          // Tap submit button
+          await tester.tap(find.widgetWithText(ElevatedButton, 'Login'));
+          await tester.pump();
 
-      // Perform the end-to-end flow of filling out the form and logging in
-      // Verify the user experience and expected results
-      await tester.enterText(find.widgetWithText(TextFormField, 'Email'), 'test@example.com');
-      await tester.enterText(find.widgetWithText(TextFormField, 'Password'), 'password');
-      await tester.tap(find.widgetWithText(ElevatedButton, 'Login'));
-      await tester.pumpAndSettle();
-
-      // Verify navigation to the company page upon successful submission
-      expect(find.text('Company Page'), findsOneWidget); // Assuming the company page contains the text "Company Page"
-    });
+          // Expect to show error alert dialog
+          expect(find.text('Invalid Username/Password !!'), findsOneWidget);
+        });
   });
 }
