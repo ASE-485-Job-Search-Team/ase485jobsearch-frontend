@@ -1,50 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
+import 'package:jobsearchmobile/models/user.dart';
+import 'package:jobsearchmobile/screens/home/widgets/custom_app_bar.dart';
 import 'package:jobsearchmobile/screens/my_applications/pages/job_app_create_form.dart';
+import 'package:jobsearchmobile/services/auth_api_service.dart';
 import 'package:jobsearchmobile/services/job_posting_service.dart';
+import 'package:mockito/mockito.dart';
 
-class CustomMockClient extends http.BaseClient {
-      http.Request? sentRequest;
+import 'mocks/mock_api_service.dart';
+import 'mocks/mock_job_posting_service.dart';
 
-      @override
-      Future<http.StreamedResponse> send(http.BaseRequest request) {
-            sentRequest = request as http.Request?;
-            return Future.error(Exception('Test client, not sending actual request.'));
-      }
-}
 
 void main() {
-      testWidgets('JobApplicationPage submits form and sends a request to create a new job posting',
-              (WidgetTester tester) async {
-                // Prepare the custom mock API service
-                final customMockClient = CustomMockClient();
-                final jobPostingService = JobPostingService(httpClient: customMockClient);
+  group('JobApplicationPage', () {
+    testWidgets('Form renders and submits correctly', (WidgetTester tester) async {
+      // Prepare test data
+      final mockApiService = MockAPIService();
+      final mockJobPostingService = MockJobPostingService();
 
-                // Build the MaterialApp with JobApplicationPage as the home widget
-                final app = MaterialApp(
-                      home: JobApplicationPage(),
-                );
+      when(mockApiService.getUserProfile()).thenAnswer((_) async {
+        return User(
+          id: '1',
+          name: 'John Doe',
+          email: 'john.doe@example.com',
+          isAdmin: false,
+        );
+      });
 
-                await tester.pumpWidget(app);
+      // Build the widget
+      await tester.pumpWidget(MaterialApp(
+        home: JobApplicationPage(
+          apiService: mockApiService,
+          jobPostingService: mockJobPostingService,
+        ),
+      ));
 
-                // Fill in the form fields
-                await tester.enterText(find.byType(TextFormField).at(0), 'Job Title');
-                await tester.enterText(find.byType(TextFormField).at(1), 'Location');
-                await tester.enterText(find.byType(TextFormField).at(2), 'Job Type');
-                await tester.enterText(find.byType(TextFormField).at(3), 'Job Description');
-                await tester.enterText(find.byType(TextFormField).at(4), 'Qualification');
-                await tester.enterText(find.byType(TextFormField).at(5), 'Responsibility');
-                await tester.enterText(find.byType(TextFormField).at(6), '2023-04-30');
-                await tester.enterText(find.byType(TextFormField).at(7), '50000-70000');
+      // Verify CustomAppBar title
+      expect(find.widgetWithText(CustomAppBar, 'Create Job Application'), findsOneWidget);
 
-                // Tap the submit button
-                await tester.tap(find.text('Submit'));
-                await tester.pumpAndSettle();
+      // Fill out the form
+      await tester.enterText(find.byType(TextFormField).first, 'Job Title');
+      await tester.enterText(find.byType(TextFormField).at(1), 'Location');
+      await tester.enterText(find.byType(TextFormField).at(2), 'Job Type');
+      await tester.enterText(find.byType(TextFormField).at(3), 'Job Description');
+      await tester.enterText(find.byType(TextFormField).at(4), 'Qualification');
+      await tester.enterText(find.byType(TextFormField).at(5), 'Responsibility');
+      await tester.enterText(find.byType(TextFormField).at(7), 'Closing Date');
+      await tester.enterText(find.byType(TextFormField).at(8), 'Salary Range');
 
-                // Verify that a POST request was sent to the API
-                expect(customMockClient.sentRequest, isNotNull);
-                expect(customMockClient.sentRequest!.method, 'POST');
-                expect(customMockClient.sentRequest!.url.path, '/job_postings/create');
-          });
+      // Tap the 'Submit' button
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pump();
+
+      // Verify that createJobPosting was called with the correct data
+      verify(mockJobPostingService.createJobPosting(
+        title: 'Job Title',
+        companyId: '1',
+        location: 'Location',
+        jobType: 'Job Type',
+        description: 'Job Description',
+        qualifications: ['Qualification'],
+        responsibilities: ['Responsibility'],
+        datePosted: anyNamed('datePosted'),
+        dateClosing: 'Closing Date',
+        salaryRange: 'Salary Range',
+      ));
+    });
+  });
 }

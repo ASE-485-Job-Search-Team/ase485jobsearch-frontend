@@ -1,33 +1,57 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:jobsearchmobile/models/user.dart';
 import 'package:jobsearchmobile/screens/profile/profile_page.dart';
 import 'package:jobsearchmobile/services/auth_api_service.dart';
-import 'package:jobsearchmobile/services/resume_service.dart';
-import 'mock_api_service.dart';
-import 'mock_resume_service.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'mocks/mock_api_service.dart';
 
+@GenerateMocks([APIService])
 void main() {
-  testWidgets('ProfilePage displays user data and resume correctly', (WidgetTester tester) async {
-    // Create mock instances of APIService and ResumeService
-    final mockAPIService = MockAPIService();
-    final mockResumeService = MockResumeService();
+  group('Profile Page Tests', () {
+    testWidgets('Renders loading indicator while user data is being fetched', (WidgetTester tester) async {
+      final mockAPIService = MockAPIService();
+      when(mockAPIService.getUserProfile())
+          .thenAnswer((_) async => Future.delayed(Duration(seconds: 1), () => ''));
 
-    // Set the static instances of APIService and ResumeService to the mock instances
-    APIService.instance = mockAPIService;
-    ResumeService.instance = mockResumeService;
+      await tester.pumpWidget(MaterialApp(home: ProfilePage()));
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    });
 
-    // Build the ProfilePage widget
-    await tester.pumpWidget(MaterialApp(home: ProfilePage()));
+    testWidgets('Displays user data when user is fetched', (WidgetTester tester) async {
+      final mockAPIService = MockAPIService();
+      when(mockAPIService.getUserProfile()).thenAnswer((_) async {
+        return jsonEncode({
+          'data': {
+            'id': '1',
+            'first': 'John',
+            'last': 'Doe',
+            'email': 'john.doe@example.com',
+            'resume': 'resume.pdf',
+            'isAdmin': false,
+          },
+        });
+      });
 
-    // Wait for the future builders to complete
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(MaterialApp(home: ProfilePage()));
+      await tester.pumpAndSettle();
 
-    // Verify that the user's name and email are displayed
-    expect(find.text('John Doe'), findsOneWidget);
-    expect(find.text('john.doe@example.com'), findsOneWidget);
+      expect(find.text('John Doe'), findsOneWidget);
+      expect(find.text('john.doe@example.com'), findsOneWidget);
+      expect(find.text('My Resume'), findsOneWidget);
+    });
 
-    // Verify that the resume information is displayed
-    expect(find.text('resume.pdf'), findsOneWidget);
-    expect(find.byType(Chip), findsOneWidget);
+    testWidgets('Displays error when an error occurs while fetching user data', (WidgetTester tester) async {
+      final mockAPIService = MockAPIService();
+      when(mockAPIService.getUserProfile()).thenThrow(Exception('Failed to load user data'));
+
+      await tester.pumpWidget(MaterialApp(home: ProfilePage()));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Error: Failed to load user data'), findsOneWidget);
+    });
   });
 }

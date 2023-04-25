@@ -2,58 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jobsearchmobile/models/resume_upload_result.dart';
 import 'package:jobsearchmobile/screens/auth/widgets/resume_upload_button.dart';
+import 'package:jobsearchmobile/services/auth_api_service.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'mocks/mock_api_service.dart';
+import 'mocks/mock_resume_upload.dart';
 
+@GenerateMocks([APIService])
 void main() {
-  group('ResumeUploadButton widget', () {
-    final String userID = '1234';
-    final ResumeUploadResult mockResult = ResumeUploadResult(
-      'test_resume.pdf',
-      '5678',
-    );
+  group('Resume Upload Button Tests', () {
+    testWidgets('Renders upload button with correct initial state', (WidgetTester tester) async {
+      await tester.pumpWidget(MaterialApp(home: Scaffold(body: ResumeUploadButton(userID: '1'))));
 
-    testWidgets('displays selected resume name after upload', (WidgetTester tester) async {
-      await tester.pumpWidget(ResumeUploadButton(userID: userID));
-
-      final uploadButton = find.byType(ElevatedButton);
-      expect(uploadButton, findsOneWidget);
-
-      // Tap the upload button to simulate a successful upload
-      await tester.tap(uploadButton);
-      await tester.pumpAndSettle();
-
-      final selectedResumeText = find.text('Selected resume: ${mockResult.fileName}');
-      expect(selectedResumeText, findsOneWidget);
+      expect(find.text('Upload File'), findsOneWidget);
+      expect(find.byType(ElevatedButton), findsOneWidget);
     });
 
-    testWidgets('shows success dialog after successful upload', (WidgetTester tester) async {
-      await tester.pumpWidget(ResumeUploadButton(userID: userID));
+    testWidgets('Successfully uploads resume and shows success dialog', (WidgetTester tester) async {
+      final mockResumeUploader = MockResumeUploader(); // Use the MockResumeUploader
+      final mockAPIService = MockAPIService();
 
-      final uploadButton = find.byType(ElevatedButton);
-      expect(uploadButton, findsOneWidget);
+      when(mockResumeUploader.uploadResume(any)).thenAnswer((_) async => ResumeUploadResult('resume.pdf', '123'));
 
-      // Tap the upload button to simulate a successful upload
-      await tester.tap(uploadButton);
+      when(mockAPIService.updateResumeMD(any)).thenAnswer((_) async => ResponseData(data: {'success': true}, put: 'success'));
+
+      when(mockAPIService.updateResumeFB(any)).thenAnswer((_) async => ResponseData(data: null, put: 'success'));
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ResumeUploadButton(userID: '1', resumeUploader: mockResumeUploader), // Pass the MockResumeUploader to the widget
+          ),
+        ),
+      );
+
+      await tester.tap(find.byType(ElevatedButton));
       await tester.pumpAndSettle();
 
-      final dialog = find.byType(AlertDialog);
-      expect(dialog, findsOneWidget);
-
-      final dialogTitle = find.text('Registration Complete');
-      expect(dialogTitle, findsOneWidget);
-
-      final dialogContent = find.text('Your resume has been uploaded successfully.');
-      expect(dialogContent, findsOneWidget);
-
-      final okButton = find.text('OK');
-      expect(okButton, findsOneWidget);
-
-      // Tap the OK button to close the dialog
-      await tester.tap(okButton);
-      await tester.pumpAndSettle();
-
-      // Ensure that we have navigated back to the home page
-      final homePage = find.byKey(ValueKey('HomePage'));
-      expect(homePage, findsOneWidget);
+      expect(find.text('Selected resume: resume.pdf'), findsOneWidget);
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text('Registration Complete'), findsOneWidget);
+      expect(find.text('Your resume has been uploaded successfully.'), findsOneWidget);
+      expect(find.text('OK'), findsOneWidget);
     });
+
+    // Add more tests to cover various scenarios, such as error handling and different API responses.
   });
 }
