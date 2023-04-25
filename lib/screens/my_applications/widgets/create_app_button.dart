@@ -4,7 +4,6 @@ import 'package:jobsearchmobile/screens/my_applications/pages/job_app_create_for
 class CreateAppButton extends StatelessWidget {
   const CreateAppButton({Key? key}) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -16,10 +15,11 @@ class CreateAppButton extends StatelessWidget {
             MaterialPageRoute(builder: (context) => JobApplicationPage()),
           );
         },
-        child: Text('Create Application'),
+        child: Text('New Job Posting'),
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Color(0xFF2c3a6d)),
-          padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0)),
+          padding: MaterialStateProperty.all(
+              EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0)),
         ),
       ),
     );

@@ -62,10 +62,16 @@ class _MyJobPostingsState extends State<MyJobPostings> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Job Postings',
-                    style:
-                        TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Job Postings',
+                        style: TextStyle(
+                            fontSize: 22.0, fontWeight: FontWeight.w600),
+                      ),
+                      CreateAppButton(),
+                    ],
                   ),
                   const SizedBox(
                     height: 16.0,
