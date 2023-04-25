@@ -31,18 +31,16 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: HexColor("#283B71"),
-        body: ProgressHUD(
-          child: Form(
-            key: globalFormKey,
-            child: _loginUI(context),
-          ),
-          inAsyncCall: isApiCallProcess,
-          opacity: 0.3,
-          key: UniqueKey(),
+    return Scaffold(
+      backgroundColor: HexColor("#283B71"),
+      body: ProgressHUD(
+        child: Form(
+          key: globalFormKey,
+          child: _loginUI(context),
         ),
+        inAsyncCall: isApiCallProcess,
+        opacity: 0.3,
+        key: UniqueKey(),
       ),
     );
   }
@@ -113,14 +111,14 @@ class _LoginPageState extends State<LoginPage> {
               context,
               "Email",
               "Email",
-                  (onValidateVal) {
+              (onValidateVal) {
                 if (onValidateVal.isEmpty) {
                   return 'email can\'t be empty.';
                 }
 
                 return null;
               },
-                  (onSavedVal) => {
+              (onSavedVal) => {
                 email = onSavedVal,
               },
               initialValue: "",
@@ -139,14 +137,14 @@ class _LoginPageState extends State<LoginPage> {
               context,
               "Password",
               "Password",
-                  (onValidateVal) {
+              (onValidateVal) {
                 if (onValidateVal.isEmpty) {
                   return 'Password can\'t be empty.';
                 }
 
                 return null;
               },
-                  (onSavedVal) => {
+              (onSavedVal) => {
                 password = onSavedVal,
               },
               initialValue: "",
@@ -174,8 +172,8 @@ class _LoginPageState extends State<LoginPage> {
             alignment: Alignment.bottomRight,
             child: Padding(
                 padding: const EdgeInsets.only(
-                  right: 25,
-                )),
+              right: 25,
+            )),
           ),
           const SizedBox(
             height: 20,
@@ -183,7 +181,7 @@ class _LoginPageState extends State<LoginPage> {
           Center(
             child: FormHelper.submitButton(
               "Login",
-                  () {
+              () {
                 if (validateAndSave()) {
                   setState(() {
                     isApiCallProcess = true;
@@ -195,7 +193,7 @@ class _LoginPageState extends State<LoginPage> {
                   );
 
                   APIService.login(model).then(
-                        (response) {
+                    (response) {
                       setState(() {
                         isApiCallProcess = false;
                       });
@@ -204,7 +202,7 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.pushNamedAndRemoveUntil(
                           context,
                           '/home',
-                              (route) => false,
+                          (route) => false,
                         );
                       } else {
                         FormHelper.showSimpleAlertDialog(
@@ -212,7 +210,7 @@ class _LoginPageState extends State<LoginPage> {
                           Api.appName,
                           "Invalid Username/Password !!",
                           "OK",
-                              () {
+                          () {
                             Navigator.of(context).pop();
                           },
                         );

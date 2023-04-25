@@ -99,7 +99,6 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
     for (var controller in _responsibilitiesControllers) {
       controller.dispose();
     }
-    super.dispose();
   }
 
   Widget _buildResponsibilityFields() {
@@ -259,7 +258,7 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       _jobPostingService
-                          .createJobPosting(
+                          .createJobPosting(http.Client(),
                               title: _jobTitleController.text,
                               companyId: _user.id,
                               location: _locationController.text,
@@ -274,8 +273,23 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                               datePosted: _postedDateController.text,
                               dateClosing: _closingDateController.text,
                               salaryRange: _salaryRangeController.text)
-                          .then((value) => {})
-                          .catchError((error) => {}); // Error handling here
+                          .then((response) => {
+                                Navigator.pop(context, true),
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  backgroundColor: Colors.green,
+                                  content: Text(
+                                      'New job posting created successfully.'),
+                                ))
+                              })
+                          .catchError((error) => {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  backgroundColor: Colors.red,
+                                  content: Text(
+                                      'Error creating new job posting. Please try again.'),
+                                ))
+                              }); // Error handling here
                     }
                   },
                   child: Text('Submit'),

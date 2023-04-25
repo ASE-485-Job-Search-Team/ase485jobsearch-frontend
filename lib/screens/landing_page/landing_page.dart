@@ -24,6 +24,9 @@ class _LandingPageState extends State<LandingPage> {
     setState(() {
       _isLoggedIn = isLoggedIn;
     });
+    if (isLoggedIn) {
+      Navigator.pushNamed(context, '/home');
+    }
   }
 
   @override
@@ -65,19 +68,6 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                 ),
               ],
-              SizedBox(height: 20.0),
-              ElevatedButton(
-                onPressed: () {
-                  // Navigate to sign up page
-                  Navigator.pushNamed(context, '/home');
-                },
-                child: Text('Home'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Color(0xFF2c3a6d)),
-                  padding: MaterialStateProperty.all(
-                      EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0)),
-                ),
-              ),
             ],
           ),
         ));

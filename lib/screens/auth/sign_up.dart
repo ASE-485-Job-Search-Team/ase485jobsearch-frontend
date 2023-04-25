@@ -36,18 +36,16 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: HexColor("#283B71"),
-        body: ProgressHUD(
-          child: Form(
-            key: globalFormKey,
-            child: _registerUI(context),
-          ),
-          inAsyncCall: isApiCallProcess,
-          opacity: 0.3,
-          key: UniqueKey(),
+    return Scaffold(
+      backgroundColor: HexColor("#283B71"),
+      body: ProgressHUD(
+        child: Form(
+          key: globalFormKey,
+          child: _registerUI(context),
         ),
+        inAsyncCall: isApiCallProcess,
+        opacity: 0.3,
+        key: UniqueKey(),
       ),
     );
   }
@@ -116,14 +114,14 @@ class _SignUpPageState extends State<SignUpPage> {
               context,
               "First",
               "First",
-                  (onValidateVal) {
+              (onValidateVal) {
                 if (onValidateVal.isEmpty) {
                   return 'First Name can\'t be empty.';
                 }
 
                 return null;
               },
-                  (onSavedVal) => {
+              (onSavedVal) => {
                 first = onSavedVal,
               },
               initialValue: "",
@@ -141,14 +139,14 @@ class _SignUpPageState extends State<SignUpPage> {
               context,
               "Last",
               "Last",
-                  (onValidateVal) {
+              (onValidateVal) {
                 if (onValidateVal.isEmpty) {
                   return 'Last Name can\'t be empty.';
                 }
 
                 return null;
               },
-                  (onSavedVal) => {
+              (onSavedVal) => {
                 last = onSavedVal,
               },
               initialValue: "",
@@ -166,14 +164,14 @@ class _SignUpPageState extends State<SignUpPage> {
               context,
               "Email",
               "Email",
-                  (onValidateVal) {
+              (onValidateVal) {
                 if (onValidateVal.isEmpty) {
                   return 'Email can\'t be empty.';
                 }
 
                 return null;
               },
-                  (onSavedVal) => {
+              (onSavedVal) => {
                 email = onSavedVal,
               },
               initialValue: "",
@@ -191,14 +189,14 @@ class _SignUpPageState extends State<SignUpPage> {
               context,
               "Password",
               "Password",
-                  (onValidateVal) {
+              (onValidateVal) {
                 if (onValidateVal.isEmpty) {
                   return 'Password can\'t be empty.';
                 }
 
                 return null;
               },
-                  (onSavedVal) => {
+              (onSavedVal) => {
                 password = onSavedVal,
               },
               initialValue: "",
@@ -228,7 +226,7 @@ class _SignUpPageState extends State<SignUpPage> {
           Center(
             child: FormHelper.submitButton(
               "Register",
-                  () {
+              () {
                 if (validateAndSave()) {
                   setState(() {
                     isApiCallProcess = true;
@@ -247,13 +245,15 @@ class _SignUpPageState extends State<SignUpPage> {
                       // Call the create user to firestore
                       CreateUserRequestModel cuModel = CreateUserRequestModel(
                           userId: response.data!.id,
-                          fullName: response.data!.first + " " + response.data!.last);
+                          fullName:
+                              response.data!.first + " " + response.data!.last);
 
                       APIService.createUserForFb(cuModel).then((response2) {
                         if (response2.post == 'success') {
                           LoginRequestModel lrModel = LoginRequestModel(
                               email: email, password: password);
-                          APIService.login(lrModel).then((response) {
+                          APIService.login(lrModel).then(
+                            (response) {
                               setState(() {
                                 isApiCallProcess = false;
                               });
@@ -262,7 +262,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 Navigator.pushNamedAndRemoveUntil(
                                   context,
                                   '/resume',
-                                      (route) => false,
+                                  (route) => false,
                                 );
                               } else {
                                 FormHelper.showSimpleAlertDialog(
@@ -270,21 +270,20 @@ class _SignUpPageState extends State<SignUpPage> {
                                   Api.appName,
                                   "Failed to login user",
                                   "OK",
-                                      () {
+                                  () {
                                     Navigator.of(context).pop();
                                   },
                                 );
                               }
                             },
                           );
-                        }
-                        else {
+                        } else {
                           FormHelper.showSimpleAlertDialog(
                             context,
                             Api.appName,
                             "Failed to register user to firestore",
                             "OK",
-                                () {
+                            () {
                               Navigator.of(context).pop();
                             },
                           );
@@ -296,13 +295,12 @@ class _SignUpPageState extends State<SignUpPage> {
                         Api.appName,
                         "Failed to register user to mongodb",
                         "OK",
-                            () {
+                        () {
                           Navigator.of(context).pop();
                         },
                       );
                     }
-                  }
-                  );
+                  });
                 }
               },
               btnColor: HexColor("283B71"),
