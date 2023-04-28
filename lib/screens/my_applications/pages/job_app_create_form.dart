@@ -10,14 +10,17 @@ import '../../../models/user.dart';
 import '../../../services/auth_api_service.dart';
 
 class JobApplicationPage extends StatefulWidget {
+  final apiService;
+  final jobPostingService;
+
+  JobApplicationPage({required this.apiService, required this.jobPostingService});
+
   @override
   _JobApplicationPageState createState() => _JobApplicationPageState();
 }
 
 class _JobApplicationPageState extends State<JobApplicationPage> {
   late User _user;
-  final JobPostingService _jobPostingService =
-      JobPostingService(httpClient: http.Client());
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _jobTitleController = TextEditingController();
@@ -25,11 +28,11 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _jobTypeController = TextEditingController();
   final TextEditingController _jobDescriptionController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _postedDateController = TextEditingController();
   final TextEditingController _closingDateController = TextEditingController();
   final TextEditingController _companyLogoURLController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _salaryRangeController = TextEditingController();
 
   List<TextEditingController> _qualificationControllers = [];
@@ -54,7 +57,7 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
 
   void _loadUserData() async {
     late User user;
-    String response = await APIService.getUserProfile();
+    String response = await widget.apiService.getUserProfile();
 
     final model = jsonDecode(response);
     final isAdmin = model['data']['isAdmin'];
@@ -258,7 +261,7 @@ class _JobApplicationPageState extends State<JobApplicationPage> {
                   ),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      _jobPostingService
+                      widget.jobPostingService
                           .createJobPosting(
                               title: _jobTitleController.text,
                               companyId: _user.id,

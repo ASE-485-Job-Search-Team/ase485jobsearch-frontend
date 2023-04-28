@@ -9,13 +9,20 @@ import 'package:mockito/mockito.dart';
 
 import 'mocks/mock_api_service.dart';
 import 'mocks/mock_job_posting_service.dart';
+import 'package:http/http.dart' as http;
+import 'user_home_page_test.mocks.dart';
 
 
 void main() {
   group('JobApplicationPage', () {
+    late http.Client client;
+
+    setUp(() {
+      client = MockClient();
+    });
     testWidgets('Form renders and submits correctly', (WidgetTester tester) async {
       // Prepare test data
-      final mockApiService = MockAPIService();
+      final mockApiService = APIService(client: client);
       final mockJobPostingService = MockJobPostingService();
 
       when(mockApiService.getUserProfile()).thenAnswer((_) async {
@@ -24,7 +31,7 @@ void main() {
           name: 'John Doe',
           email: 'john.doe@example.com',
           isAdmin: false,
-        );
+        ) as String;
       });
 
       // Build the widget
@@ -61,7 +68,7 @@ void main() {
         description: 'Job Description',
         qualifications: ['Qualification'],
         responsibilities: ['Responsibility'],
-        datePosted: anyNamed('datePosted'),
+        datePosted: 'Posted Date',
         dateClosing: 'Closing Date',
         salaryRange: 'Salary Range',
       ));

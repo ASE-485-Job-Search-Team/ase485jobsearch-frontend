@@ -11,11 +11,13 @@ import 'package:jobsearchmobile/screens/my_applications/widgets/application_card
 import 'package:jobsearchmobile/screens/my_applications/widgets/create_app_button.dart';
 import 'package:http/http.dart' as http;
 import 'package:jobsearchmobile/screens/auth/widgets/resume_upload_button.dart';
+import 'package:jobsearchmobile/services/auth_api_service.dart';
 import '../../constants/api.dart';
 import '../home/widgets/job_info_item.dart';
 
 class MyJobPostings extends StatefulWidget {
-  const MyJobPostings({Key? key}) : super(key: key);
+  final APIService apiService;
+  const MyJobPostings({Key? key, required this.apiService}) : super(key: key);
 
   @override
   State<MyJobPostings> createState() => _MyJobPostingsState();
@@ -100,7 +102,7 @@ class _MyJobPostingsState extends State<MyJobPostings> {
                                       children:
                                           jobPosting.value.map((jobPosting) {
                                         return JobPostingItem(
-                                          jobPosting: jobPosting,
+                                          jobPosting: jobPosting, apiService: widget.apiService,
                                         );
                                       }).toList(),
                                     ),

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:jobsearchmobile/screens/home/widgets/job_info_item.dart';
 import 'package:http/http.dart' as http;
+import 'package:jobsearchmobile/services/auth_api_service.dart';
 import '../../../models/job_info.dart';
 import '../../../services/job_posting_service.dart';
 
 class HomeJobPostingList extends StatefulWidget {
-  const HomeJobPostingList({Key? key}) : super(key: key);
+  final APIService apiService;
+  const HomeJobPostingList({Key? key, required this.apiService}) : super(key: key);
 
   @override
   State<HomeJobPostingList> createState() => _HomeJobPostingListState();
@@ -48,7 +50,7 @@ class _HomeJobPostingListState extends State<HomeJobPostingList> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return JobPostingListView(
-                      snapshot: snapshot,
+                      snapshot: snapshot, apiService: widget.apiService,
                     );
                   } else if (snapshot.hasError) {
                     return const Text('Error');
@@ -77,7 +79,7 @@ class _HomeJobPostingListState extends State<HomeJobPostingList> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return JobPostingListView(
-                      snapshot: snapshot,
+                      snapshot: snapshot, apiService: widget.apiService,
                     );
                   } else if (snapshot.hasError) {
                     return const Text('Error');
@@ -105,7 +107,7 @@ class _HomeJobPostingListState extends State<HomeJobPostingList> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return JobPostingListView(
-                      snapshot: snapshot,
+                      snapshot: snapshot, apiService: widget.apiService,
                     );
                   } else if (snapshot.hasError) {
                     return const Text('Error');
@@ -125,10 +127,11 @@ class _HomeJobPostingListState extends State<HomeJobPostingList> {
 }
 
 class JobPostingListView extends StatelessWidget {
+  final APIService apiService;
   final dynamic snapshot;
   const JobPostingListView({
     super.key,
-    required this.snapshot,
+    required this.snapshot, required this.apiService,
   });
 
   @override
@@ -136,7 +139,7 @@ class JobPostingListView extends StatelessWidget {
     return ListView.separated(
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) => JobInfoItem(
-              jobPosting: snapshot.data![index],
+              jobPosting: snapshot.data![index], apiService: apiService,
             ),
         separatorBuilder: (_, index) => const SizedBox(
               width: 12.0,

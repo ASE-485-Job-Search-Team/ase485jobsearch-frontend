@@ -5,6 +5,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:jobsearchmobile/screens/home/widgets/job_detail.dart';
 import 'package:jobsearchmobile/screens/home/widgets/job_info_item.dart';
+import 'package:jobsearchmobile/services/auth_api_service.dart';
 import 'package:mockito/annotations.dart';
 
 Future<void> addDelay(int ms) async {
@@ -13,13 +14,19 @@ Future<void> addDelay(int ms) async {
 
 @GenerateMocks([http.Client])
 void main() {
+  late APIService apiService;
+
+  setUp(() {
+    apiService = APIService(client: http.Client);
+  });
+
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
 
   group('UserHomePage', () {
     testWidgets('end-to-end testing', (WidgetTester tester) async {
-      await tester.pumpWidget(const MyApp());
+      await tester.pumpWidget(MyApp(apiService: apiService,));
       final homeButton = find.text('Home');
       expect(homeButton, findsOneWidget);
       await tester.tap(homeButton);
@@ -61,7 +68,7 @@ void main() {
     });
 
     testWidgets('should show job postings', (WidgetTester tester) async {
-      await tester.pumpWidget(const MyApp());
+      await tester.pumpWidget(MyApp(apiService: apiService,));
       final homeButton = find.text('Home');
       expect(homeButton, findsOneWidget);
       await tester.tap(homeButton);
@@ -79,7 +86,7 @@ void main() {
     });
 
     testWidgets('should show job details', (WidgetTester tester) async {
-      await tester.pumpWidget(const MyApp());
+      await tester.pumpWidget(MyApp(apiService: apiService,));
       final homeButton = find.text('Home');
       expect(homeButton, findsOneWidget);
       await tester.tap(homeButton);
@@ -97,7 +104,7 @@ void main() {
 
     testWidgets('should show feedback after submitting application',
         (WidgetTester tester) async {
-      await tester.pumpWidget(const MyApp());
+      await tester.pumpWidget(MyApp(apiService: apiService,));
       final homeButton = find.text('Home');
       expect(homeButton, findsOneWidget);
       await tester.tap(homeButton);

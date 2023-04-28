@@ -9,20 +9,25 @@ import '../../../services/resume_upload_service.dart';
 
 
 class ResumeUploadButton extends StatefulWidget {
+  final APIService apiService;
   final String userID;
+  final ResumeUploader? resumeUploader;
 
-  ResumeUploadButton({required this.userID});
+
+  ResumeUploadButton({required this.userID, this.resumeUploader, required this.apiService});
 
   @override
-  _ResumeUploadButtonState createState() => _ResumeUploadButtonState(userID: this.userID);
+  _ResumeUploadButtonState createState() => _ResumeUploadButtonState(userID: this.userID, resumeUploader: this.resumeUploader);
 }
 
 class _ResumeUploadButtonState extends State<ResumeUploadButton> {
   String _resumeFileName = '';
-  final ResumeUploader _resumeUploader = ResumeUploader();
+  final ResumeUploader _resumeUploader;
   final userID;
 
-  _ResumeUploadButtonState({required this.userID});
+  _ResumeUploadButtonState({required this.userID, ResumeUploader? resumeUploader})
+      : _resumeUploader = resumeUploader ?? ResumeUploader();
+
 
   @override
   Widget build(BuildContext context) {
@@ -46,14 +51,14 @@ class _ResumeUploadButtonState extends State<ResumeUploadButton> {
                     id:userID,
                     resumeId: result.resumeId);
 
-                APIService.updateResumeMD(mDModel).then((response) {
+                widget.apiService.updateResumeMD(mDModel).then((response) {
                   if(response.data != null) {
                     UpdateResumeFBRequestModel fBModel = UpdateResumeFBRequestModel(
                       userId: userID,
                       resumeId: result.resumeId
                     );
 
-                    APIService.updateResumeFB(fBModel).then((response2) {
+                    widget.apiService.updateResumeFB(fBModel).then((response2) {
                       if(response2.put == 'success') {
                         // Show a dialog to inform the user that the upload was successful
                         showDialog(

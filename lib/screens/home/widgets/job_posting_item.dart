@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:jobsearchmobile/models/job_info.dart';
 import 'package:jobsearchmobile/screens/home/widgets/job_detail.dart';
 import 'package:jobsearchmobile/screens/my_applications/pages/applicants_list.dart';
+import 'package:jobsearchmobile/services/auth_api_service.dart';
 
 class JobPostingItem extends StatelessWidget {
+  final APIService apiService;
   final JobPosting jobPosting;
 
-  const JobPostingItem({Key? key, required this.jobPosting}) : super(key: key);
+  const JobPostingItem({Key? key, required this.jobPosting, required this.apiService}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +115,7 @@ class JobPostingItem extends StatelessWidget {
                       builder: (BuildContext context) => JobDetail(
                         jobPosting: jobPosting,
                         displayApplyButton: false,
+                        apiService: apiService,
                       ),
                     );
                   },

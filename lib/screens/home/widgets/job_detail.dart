@@ -9,11 +9,12 @@ import '../../../models/user.dart';
 import '../../../services/auth_api_service.dart';
 
 class JobDetail extends StatefulWidget {
+  final APIService apiService;
   final JobPosting jobPosting;
   final bool displayApplyButton;
 
   const JobDetail(
-      {Key? key, required this.jobPosting, required this.displayApplyButton})
+      {Key? key, required this.jobPosting, required this.displayApplyButton, required this.apiService})
       : super(key: key);
 
   @override
@@ -33,7 +34,7 @@ class _JobDetailState extends State<JobDetail> {
   }
 
   void _loadUserData() async {
-    String response = await APIService.getUserProfile();
+    String response = await widget.apiService.getUserProfile();
 
     final model = jsonDecode(response);
     final isAdmin = model['data']['isAdmin'];

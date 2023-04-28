@@ -12,7 +12,8 @@ import 'package:snippet_coder_utils/hex_color.dart';
 import '../../constants/api.dart';
 
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({Key? key}) : super(key: key);
+  final APIService apiService;
+  const SignUpPage({Key? key, required this.apiService}) : super(key: key);
 
   @override
   _SignUpPageState createState() => _SignUpPageState();
@@ -242,18 +243,18 @@ class _SignUpPageState extends State<SignUpPage> {
                     isAdmin: false,
                   );
 
-                  APIService.register(model).then((response) {
+                  widget.apiService.register(model).then((response) {
                     if (response.data != null) {
                       // Call the create user to firestore
                       CreateUserRequestModel cuModel = CreateUserRequestModel(
                           userId: response.data!.id,
                           fullName: response.data!.first + " " + response.data!.last);
 
-                      APIService.createUserForFb(cuModel).then((response2) {
+                      widget.apiService.createUserForFb(cuModel).then((response2) {
                         if (response2.post == 'success') {
                           LoginRequestModel lrModel = LoginRequestModel(
                               email: email, password: password);
-                          APIService.login(lrModel).then((response) {
+                          widget.apiService.login(lrModel).then((response) {
                               setState(() {
                                 isApiCallProcess = false;
                               });

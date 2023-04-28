@@ -11,7 +11,8 @@ import 'package:jobsearchmobile/services/auth_api_service.dart';
 import '../models/user.dart';
 
 class MainAppLayout extends StatefulWidget {
-  const MainAppLayout({Key? key}) : super(key: key);
+  final APIService apiService;
+  const MainAppLayout({Key? key, required this.apiService}) : super(key: key);
 
   @override
   State<MainAppLayout> createState() => _MainAppLayoutState();
@@ -44,7 +45,7 @@ class _MainAppLayoutState extends State<MainAppLayout> {
 
   void _loadUserData() async {
     late User user;
-    String response = await APIService.getUserProfile();
+    String response = await widget.apiService.getUserProfile();
 
     final model = jsonDecode(response);
     final isAdmin = model['data']['isAdmin'];
@@ -70,14 +71,14 @@ class _MainAppLayoutState extends State<MainAppLayout> {
       _user = user;
       if (_user.isAdmin)
         _widgetOptions = <Widget>[
-          MyJobPostings(),
-          ProfilePage(),
+          MyJobPostings(apiService: widget.apiService,),
+          ProfilePage(apiService: widget.apiService,),
         ];
       else
         _widgetOptions = <Widget>[
-          UserHomePage(user: user),
-          MyApplications(),
-          ProfilePage(),
+          UserHomePage(user: user, apiService: widget.apiService,),
+          MyApplications(apiService: widget.apiService,),
+          ProfilePage(apiService: widget.apiService,),
         ];
     });
   }

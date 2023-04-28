@@ -14,7 +14,8 @@ import '../../models/user.dart';
 import '../../services/auth_api_service.dart';
 
 class MyApplications extends StatefulWidget {
-  const MyApplications({Key? key}) : super(key: key);
+  final APIService apiService;
+  const MyApplications({Key? key, required this.apiService}) : super(key: key);
 
   @override
   State<MyApplications> createState() => _MyApplicationsState();
@@ -30,7 +31,7 @@ class _MyApplicationsState extends State<MyApplications> {
   }
 
   Future<User> _loadUserData() async {
-    String response = await APIService.getUserProfile();
+    String response = await widget.apiService.getUserProfile();
 
     final model = jsonDecode(response);
     final isAdmin = model['data']['isAdmin'];

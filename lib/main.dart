@@ -6,12 +6,15 @@ import 'package:jobsearchmobile/screens/auth/sign_up_company.dart';
 import 'package:jobsearchmobile/screens/auth/sign_up_select_type.dart';
 import 'package:jobsearchmobile/screens/landing_page/landing_page.dart';
 import 'package:jobsearchmobile/screens/main_layout.dart';
+import 'package:jobsearchmobile/services/auth_api_service.dart';
+import 'package:http/http.dart' as http;
 
-
-void main() => runApp(MyApp());
+final APIService apiService = APIService(client: http.Client);
+void main() => runApp(MyApp(apiService: apiService,));
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final APIService apiService;
+  const MyApp({super.key, required this.apiService});
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +35,13 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => LandingPage(),
-        '/signup': (context) => SignUpPage(),
-        '/login': (context) => LoginPage(),
-        '/home': (context) => MainAppLayout(),
-        '/signupcompany': (context) => const SignUpCompanyPage(),
+        '/signup': (context) => SignUpPage(apiService: apiService,),
+        '/login': (context) => LoginPage(apiService: apiService,),
+        '/home': (context) => MainAppLayout(apiService: apiService,),
+        '/signupcompany': (context) => SignUpCompanyPage(apiService: apiService,),
         '/select': (context) => const SelectTypePage(),
         // '/user': (context) => UserDashboardPage(),
-        '/resume': (context) => ResumeUploadPage(),
+        '/resume': (context) => ResumeUploadPage(apiService: apiService,),
         // '/company': (context) => DashboardPage(),
         // '/jobapp': (context) => JobApplicationPage(),
       },

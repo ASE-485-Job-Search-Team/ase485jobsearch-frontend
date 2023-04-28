@@ -21,9 +21,11 @@ import '../models/auth/create_user_request.dart';
 import '../models/user.dart';
 
 class APIService {
-  static var client = http.Client();
+  final client;
 
-  static Future<bool> login(LoginRequestModel model) async {
+  APIService({required this.client});
+
+  Future<bool> login(LoginRequestModel model) async {
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
     };
@@ -46,7 +48,7 @@ class APIService {
     }
   }
 
-  static Future<RegisterResponseModel> register(
+  Future<RegisterResponseModel> register(
     RegisterRequestModel model,
   ) async {
     Map<String, String> requestHeaders = {
@@ -67,7 +69,7 @@ class APIService {
     return registerResponseJSON(response.body);
   }
 
-  static Future<RegisterResponseCompanyModel> registerCompany(
+  Future<RegisterResponseCompanyModel> registerCompany(
     RegisterRequestCompanyModel model,
   ) async {
     Map<String, String> requestHeaders = {
@@ -88,7 +90,7 @@ class APIService {
     return registerCompanyResponseJSON(response.body);
   }
 
-  static Future<String> getUserProfile() async {
+  Future<String> getUserProfile() async {
     LoginResponseModel? loginDetails = await SharedService.loginDetails();
 
     Map<String, String> requestHeaders = {
@@ -110,9 +112,10 @@ class APIService {
     }
   }
 
-  static Future<User> loadUserData() async {
+  Future<User> loadUserData() async {
     late User user;
-    String response = await APIService.getUserProfile();
+    var apiService = await APIService(client: this.client);
+    String response = await apiService.getUserProfile();
 
     final model = jsonDecode(response);
     final isAdmin = model['data']['isAdmin'];
@@ -137,7 +140,7 @@ class APIService {
     return user;
   }
 
-  static Future<CreateCompanyResponseModel> createCompanyForFb(CreateCompanyRequestModel model,) async {
+  Future<CreateCompanyResponseModel> createCompanyForFb(CreateCompanyRequestModel model,) async {
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
     };
@@ -159,7 +162,7 @@ class APIService {
     return createCompanyResponseJSON(response.body);
   }
 
-  static Future<CreateUserResponseModel> createUserForFb(CreateUserRequestModel model,) async {
+  Future<CreateUserResponseModel> createUserForFb(CreateUserRequestModel model,) async {
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
     };
@@ -182,7 +185,7 @@ class APIService {
   }
 
 
-  static Future<UpdateResumeFBResponseModel> updateResumeFB(UpdateResumeFBRequestModel model,) async {
+  Future<UpdateResumeFBResponseModel> updateResumeFB(UpdateResumeFBRequestModel model,) async {
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
     };
@@ -204,7 +207,7 @@ class APIService {
     return updateResumeFBResponseJSON(response.body);
   }
 
-  static Future<UpdateResumeMDResponseModel> updateResumeMD(UpdateResumeMDRequestModel model,) async {
+  Future<UpdateResumeMDResponseModel> updateResumeMD(UpdateResumeMDRequestModel model,) async {
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
     };

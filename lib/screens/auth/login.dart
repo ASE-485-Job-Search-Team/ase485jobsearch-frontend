@@ -9,7 +9,9 @@ import '../../constants/api.dart';
 import '../../models/auth/login_request.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  final APIService apiService;
+
+  const LoginPage({Key? key, required this.apiService}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -194,7 +196,7 @@ class _LoginPageState extends State<LoginPage> {
                     password: password,
                   );
 
-                  APIService.login(model).then(
+                  widget.apiService.login(model).then(
                         (response) {
                       setState(() {
                         isApiCallProcess = false;

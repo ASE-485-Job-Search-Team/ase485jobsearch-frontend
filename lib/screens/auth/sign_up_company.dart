@@ -3,21 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:jobsearchmobile/models/auth/create_company_request.dart';
 import 'package:jobsearchmobile/models/auth/register_company_request.dart';
 import 'package:jobsearchmobile/services/auth_api_service.dart';
-
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 import 'package:snippet_coder_utils/hex_color.dart';
-
 import '../../constants/api.dart';
 
 class SignUpCompanyPage extends StatefulWidget {
-  const SignUpCompanyPage({Key? key}) : super(key: key);
+  final APIService apiService;
+
+  const SignUpCompanyPage({Key? key, required this.apiService}) : super(key: key);
 
   @override
-  _SignUpCompanyPageState createState() => _SignUpCompanyPageState();
+  _SignUpCompanyPageState createState() => _SignUpCompanyPageState(apiService: apiService);
 }
 
 class _SignUpCompanyPageState extends State<SignUpCompanyPage> {
+  var apiService;
+
+  _SignUpCompanyPageState({required this.apiService});
+
   bool isApiCallProcess = false;
   bool hidePassword = true;
   static final GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
@@ -112,36 +116,13 @@ class _SignUpCompanyPageState extends State<SignUpCompanyPage> {
             padding: const EdgeInsets.only(bottom: 10),
             child: FormHelper.inputFieldWidget(
               context,
-              "Company",
-              "Company",
-                  (onValidateVal) {
-                if (onValidateVal.isEmpty) {
-                  return 'Company can\'t be empty.';
-                }
-
-                return null;
-              },
-                  (onSavedVal) => {
-                company = onSavedVal,
-              },
-              initialValue: "",
-              borderFocusColor: Colors.white,
-              prefixIconColor: Colors.white,
-              borderColor: Colors.white,
-              textColor: Colors.white,
-              hintColor: Colors.white.withOpacity(0.7),
-              borderRadius: 10,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: FormHelper.inputFieldWidget(
-              context,
               "Email",
               "Email",
                   (onValidateVal) {
                 if (onValidateVal.isEmpty) {
                   return 'Email can\'t be empty.';
+                } else if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$").hasMatch(onValidateVal)) {
+                  return 'Invalid email format.';
                 }
 
                 return null;
@@ -215,7 +196,7 @@ class _SignUpCompanyPageState extends State<SignUpCompanyPage> {
                     isAdmin: true,
                   );
 
-                  APIService.registerCompany(model).then(
+                  apiService.registerCompany(model).then(
                         (response) {
                       setState(() {
                         isApiCallProcess = false;
@@ -226,7 +207,7 @@ class _SignUpCompanyPageState extends State<SignUpCompanyPage> {
                             companyId: response.data!.id,
                             companyName: company);
 
-                        APIService.createCompanyForFb(model2).then((response2) {
+                        apiService.createCompanyForFb(model2).then((response2) {
                           if(response2.post == "success") {
                             FormHelper.showSimpleAlertDialog(
                               context,

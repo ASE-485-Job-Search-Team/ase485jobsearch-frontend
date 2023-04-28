@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:jobsearchmobile/screens/my_applications/pages/job_app_create_form.dart';
+import 'package:jobsearchmobile/services/auth_api_service.dart';
+import 'package:jobsearchmobile/services/job_posting_service.dart';
 
 class CreateAppButton extends StatelessWidget {
-  const CreateAppButton({Key? key}) : super(key: key);
+  final APIService apiService;
+  final JobPostingService jobPostingService;
+  const CreateAppButton({Key? key, required this.apiService, required this.jobPostingService}) : super(key: key);
 
 
   @override
@@ -13,7 +17,7 @@ class CreateAppButton extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => JobApplicationPage()),
+            MaterialPageRoute(builder: (context) => JobApplicationPage(apiService: apiService, jobPostingService: jobPostingService,)),
           );
         },
         child: Text('Create Application'),

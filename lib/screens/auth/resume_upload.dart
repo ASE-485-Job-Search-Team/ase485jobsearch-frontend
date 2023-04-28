@@ -7,7 +7,9 @@ import '../../services/auth_api_service.dart';
 import 'widgets/resume_upload_button.dart';
 
 class ResumeUploadPage extends StatefulWidget {
-  const ResumeUploadPage({Key? key}) : super(key: key);
+  final APIService apiService;
+
+  const ResumeUploadPage({Key? key, required this.apiService}) : super(key: key);
 
   @override
   _ResumeUploadPage createState() => _ResumeUploadPage();
@@ -23,7 +25,7 @@ class _ResumeUploadPage extends State<ResumeUploadPage> {
   }
 
   Future<User> _loadUserData() async {
-    String response = await APIService.getUserProfile();
+    String response = await widget.apiService.getUserProfile();
 
     final model = jsonDecode(response);
     final isAdmin = model['data']['isAdmin'];
@@ -75,7 +77,7 @@ class _ResumeUploadPage extends State<ResumeUploadPage> {
                   ),
                   SizedBox(height: 20),
                   ResumeUploadButton(
-                    userID: user!.id,
+                    userID: user!.id, apiService: widget.apiService,
                   ),
                 ],
               );

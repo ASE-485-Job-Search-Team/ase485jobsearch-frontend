@@ -9,7 +9,9 @@ import 'package:jobsearchmobile/services/auth_api_service.dart';
 import 'package:jobsearchmobile/services/resume_service.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  final APIService apiService;
+
+  const ProfilePage({Key? key, required this.apiService}) : super(key: key);
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -17,7 +19,6 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late Future<User> _userFuture;
-  final ResumeService resumeService = ResumeService();
 
   @override
   void initState() {
@@ -27,7 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<User> _loadUserData() async {
     late User user;
-    String response = await APIService.getUserProfile();
+    String response = await widget.apiService.getUserProfile();
 
     final model = jsonDecode(response);
     final isAdmin = model['data']['isAdmin'];
